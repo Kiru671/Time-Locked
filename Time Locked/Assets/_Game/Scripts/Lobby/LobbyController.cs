@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -11,6 +12,18 @@ public class LobbyController : MonoBehaviour
     private Lobby connectedLobby;
     private float lobbyHeartbeatTimer;
     private float lobbyPollTimer;
+    
+    private void OnApplicationQuit()
+    {
+        LeaveLobby();
+    }
+    
+    /* (?)
+    private void OnDestroy()
+    {
+        LeaveLobby();
+    }
+    */
 
     private void Awake()
     {
@@ -58,7 +71,7 @@ public class LobbyController : MonoBehaviour
             lobbyPollTimer = lobbyPollMax;
             
             connectedLobby = await LobbyService.Instance.GetLobbyAsync(connectedLobby.Id);
-            LobbyUIManager.Instance.UpdatePlayerCount(connectedLobby.Players.Count);
+            LobbyUIManager.Instance.UpdatePlayerSlots(connectedLobby.Players);
 
             // If a client joins, the lobby UI should activate for them
             if (!IsLobbyHost()) {
@@ -93,6 +106,7 @@ public class LobbyController : MonoBehaviour
 
             LobbyUIManager.Instance.ShowLobbyUI();
             LobbyUIManager.Instance.UpdateLobbyCode(connectedLobby.LobbyCode);
+            LobbyUIManager.Instance.UpdatePlayerSlots(connectedLobby.Players);
             Debug.Log($"Created lobby with code: {connectedLobby.LobbyCode}");
 
         }
@@ -112,6 +126,9 @@ public class LobbyController : MonoBehaviour
 
             string relayJoinCode = joinedLobby.Data["RELAY_CODE"].Value;
             await RelayManager.Instance.JoinRelay(relayJoinCode);
+            
+            LobbyUIManager.Instance.UpdatePlayerSlots(connectedLobby.Players);
+            LobbyUIManager.Instance.UpdateLobbyCode(joinedLobby.LobbyCode);
 
             Debug.Log($"Joined lobby with code: {lobbyCode}");
             return true;
@@ -121,6 +138,24 @@ public class LobbyController : MonoBehaviour
             Debug.LogError(e);
             return false;
         }
+    }
+    
+    public async void LeaveLobby()
+    {
+        if (connectedLobby == null) return;
+
+        try
+        {
+            await LobbyService.Instance.RemovePlayerAsync(
+                connectedLobby.Id,
+                Unity.Services.Authentication.AuthenticationService.Instance.PlayerId);
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogWarning(e);
+        }
+
+        connectedLobby = null;
     }
 
     private bool IsLobbyHost()

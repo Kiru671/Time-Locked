@@ -1,34 +1,43 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.Services.Lobbies.Models;
 
 public class LobbyUIManager : MonoBehaviour
 {
     public static LobbyUIManager Instance { get; private set; }
 
-    [Header("UI Panels")]
-    [SerializeField] private GameObject mainMenuUI;
+    [Header("UI Panels")] [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private GameObject lobbyCodeInputUI;
     [SerializeField] private GameObject lobbyUI;
 
-    [Header("Main Menu Buttons")]
-    [SerializeField] private Button createLobbyButton;
+    [Header("Main Menu Buttons")] [SerializeField]
+    private Button createLobbyButton;
+
     [SerializeField] private Button joinLobbyButton;
 
-    [Header("Lobby Code Input")]
-    [SerializeField] private TMP_InputField lobbyCodeInputField;
+    [Header("Lobby Code Input")] [SerializeField]
+    private TMP_InputField lobbyCodeInputField;
+
     [SerializeField] private Button confirmJoinButton;
     [SerializeField] private Button backButton;
 
-    [Header("Lobby View")]
-    [SerializeField] private TextMeshProUGUI lobbyCodeText;
-    [SerializeField] private TextMeshProUGUI playerCountText;
+    [Header("Lobby View")] [SerializeField]
+    private TextMeshProUGUI lobbyCodeText;
+
+    [SerializeField] private PlayerSlotUI[] playerSlots;
 
 
     private void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); }
-        else { Instance = this; }
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
     private void Start()
@@ -37,7 +46,7 @@ public class LobbyUIManager : MonoBehaviour
         joinLobbyButton.onClick.AddListener(OnJoinLobbyClicked);
         confirmJoinButton.onClick.AddListener(OnConfirmJoinClicked);
         backButton.onClick.AddListener(OnBackClicked);
-        
+
         ShowMainMenuUI();
     }
 
@@ -46,12 +55,12 @@ public class LobbyUIManager : MonoBehaviour
     {
         await LobbyController.Instance.CreateLobby("MyLobby", true);
     }
-    
+
     private void OnJoinLobbyClicked()
     {
         ShowLobbyCodeInputUI();
     }
-    
+
     private async void OnConfirmJoinClicked()
     {
         string code = lobbyCodeInputField.text;
@@ -68,7 +77,7 @@ public class LobbyUIManager : MonoBehaviour
             // TODO: Show an error message to the user here
         }
     }
-    
+
     private void OnBackClicked()
     {
         ShowMainMenuUI();
@@ -102,8 +111,29 @@ public class LobbyUIManager : MonoBehaviour
         lobbyCodeText.text = $"Lobby Code: {code}";
     }
 
-    public void UpdatePlayerCount(int count)
+    public void UpdatePlayerSlots(
+        System.Collections.Generic.IReadOnlyList<Player> players)
     {
-        playerCountText.text = $"Count = {count}";
+        for (int i = 0; i < playerSlots.Length; i++)
+        {
+            // Is this index occupied?
+            if (i < players.Count)
+            {
+                var p = players[i];
+
+                // Default fallback name
+                string displayName = $"Player {i + 1}";
+
+                // Did we store a custom name in lobby player data?
+                if (p.Data != null && p.Data.ContainsKey("PLAYER_NAME"))
+                    displayName = p.Data["PLAYER_NAME"].Value;
+
+                playerSlots[i].Refresh(displayName, true);
+            }
+            else
+            {
+                playerSlots[i].Refresh($"Player {i + 1}", false);
+            }
+        }
     }
 }
