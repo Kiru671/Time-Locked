@@ -24,9 +24,16 @@ TBD (Group 13 for now)
 - Two people are locked inside two memories of a house distant in time. One in the past and one in the present. A murder has taken place and their only escape is to find what exactly took place. To do so, two players must cooperate without ever being together. They send each other clues and items through cracks in time to solve puzzles and progress the story and ultimately figure out the mystery of the house.
 
 ## Story
+It is a two-player, story-based puzzle game set in the past and future.
 
-Hang tight! We're still on it. 💪
+One player moves around the same old mansion in the late 1970s and the other in the early 2010s. Their goal is to uncover the truth behind an unexplained death that happened years ago.
 
+The incident, which resulted in the death of a young woman, has been buried in silence for years.
+But old letters, shredded documents, scribbled reports and secret compartments found in the house suggest that something is missing from this story.
+
+Players must investigate rooms from different times, sharing clues with each other and solving puzzles that connect the past and the future.
+
+The truth can only be revealed if they work together.
 ## Game features
 
 TBD
