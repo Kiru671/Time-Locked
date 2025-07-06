@@ -88,7 +88,8 @@ Burgundy for tasks.
   </details>
 
 
-
+- **Previous Sprint Board**
+![Trello Board](Previous_Trello_Board.png)
 
 - **Sprint Board**
 ![Trello Board](Trello_Board.png)
