@@ -72,12 +72,15 @@ Burgundy 🟥 for Task.
 Burgundy for tasks. 
 
 - *Total story points for tasks in the first sprint is*: 72 points.
+- *Method of Estimation*: Estimated how long each task would take in hours by talking to person associated with the task, then gave them points based on the fibonacci sequence (1-2-3-5-8...).
+
 
 - **Daily Scrum**: Daily scrums have mainly been held on WhatsApp, and were aided with occasional Google Meets sessions. Below are the screenshots of our chats.
 
 <details> <summary><h3>Daily Scrum Chat Screenshots:</h3></summary>
   
   ![Screenshot 1](Scrum_1.png)
+  ![Screenshot 4](Meets.png)
   ![Screenshot 2](Scrum_2.png) 
   ![Screenshot 3](Scrum_3.png)
   ![Screenshot 4](Scrum_4.png)
