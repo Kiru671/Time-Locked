@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class PlayerSlotUI : MonoBehaviour
 {
-    [Header("References")] [SerializeField]
-    private TextMeshProUGUI playerNameText;
+    [Header("References")]
     [SerializeField] private GameObject inLobbyLabel;
     [SerializeField] private CanvasGroup canvasGroup;
 
@@ -13,9 +12,8 @@ public class PlayerSlotUI : MonoBehaviour
     [SerializeField] private float emptyAlpha = .25f; // 25 % opaque when free
 
 
-    public void Refresh(string name, bool occupied)
+    public void Refresh(bool occupied)
     {
-        playerNameText.text = name;
         inLobbyLabel.SetActive(occupied); // Show “In Lobby” only when taken
         canvasGroup.alpha = occupied ? occupiedAlpha : emptyAlpha;
     }

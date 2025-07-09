@@ -15,10 +15,11 @@ public class LobbyUIManager : MonoBehaviour
     private Button createLobbyButton;
 
     [SerializeField] private Button joinLobbyButton;
+    [SerializeField] private Button startButton;
 
     [Header("Lobby Code Input")] [SerializeField]
     private TMP_InputField lobbyCodeInputField;
-
+    [SerializeField] private LobbyCodeSegmentedInput segmentedInput;
     [SerializeField] private Button confirmJoinButton;
     [SerializeField] private Button backButton;
 
@@ -44,6 +45,7 @@ public class LobbyUIManager : MonoBehaviour
     {
         createLobbyButton.onClick.AddListener(OnCreateLobbyClicked);
         joinLobbyButton.onClick.AddListener(OnJoinLobbyClicked);
+        startButton.onClick.AddListener(OnStartButtonClicked);
         confirmJoinButton.onClick.AddListener(OnConfirmJoinClicked);
         backButton.onClick.AddListener(OnBackClicked);
 
@@ -59,6 +61,19 @@ public class LobbyUIManager : MonoBehaviour
     private void OnJoinLobbyClicked()
     {
         ShowLobbyCodeInputUI();
+    }
+
+    private async void OnStartButtonClicked()
+    {
+        // Only the host should be able to start the game
+        if (LobbyController.Instance != null)
+        {
+            await LobbyController.Instance.StartGame();
+        }
+        else
+        {
+            Debug.LogError("LobbyController instance not found!");
+        }
     }
 
     private async void OnConfirmJoinClicked()
@@ -96,6 +111,8 @@ public class LobbyUIManager : MonoBehaviour
         mainMenuUI.SetActive(false);
         lobbyCodeInputUI.SetActive(true);
         lobbyUI.SetActive(false);
+        
+        segmentedInput.Clear();
     }
 
     public void ShowLobbyUI()
@@ -121,19 +138,22 @@ public class LobbyUIManager : MonoBehaviour
             {
                 var p = players[i];
 
-                // Default fallback name
-                string displayName = $"Player {i + 1}";
-
-                // Did we store a custom name in lobby player data?
-                if (p.Data != null && p.Data.ContainsKey("PLAYER_NAME"))
-                    displayName = p.Data["PLAYER_NAME"].Value;
-
-                playerSlots[i].Refresh(displayName, true);
+                
+                playerSlots[i].Refresh(true);
             }
             else
             {
-                playerSlots[i].Refresh($"Player {i + 1}", false);
+                playerSlots[i].Refresh(false);
             }
+        }
+    }
+
+    public void UpdateHostControls(bool isHost)
+    {
+        // Only show start button for the host
+        if (startButton != null)
+        {
+            startButton.gameObject.SetActive(isHost);
         }
     }
 }
