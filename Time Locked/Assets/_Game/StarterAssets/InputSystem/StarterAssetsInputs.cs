@@ -21,12 +21,12 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM
-		public virtual void OnMove(InputValue value)
+		public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
 		}
 
-		public virtual void OnLook(InputValue value)
+		public void OnLook(InputValue value)
 		{
 			if(cursorInputForLook)
 			{
@@ -34,12 +34,12 @@ namespace StarterAssets
 			}
 		}
 
-		public virtual void OnJump(InputValue value)
+		public void OnJump(InputValue value)
 		{
 			JumpInput(value.isPressed);
 		}
 
-		public virtual void OnSprint(InputValue value)
+		public void OnSprint(InputValue value)
 		{
 			SprintInput(value.isPressed);
 		}

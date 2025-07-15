@@ -998,7 +998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuSceneName: MenuScene
-  gameSceneName: SampleScene
+  gameSceneName: GameScene
   loadingDelay: 0.5
 --- !u!4 &217022689
 Transform:
