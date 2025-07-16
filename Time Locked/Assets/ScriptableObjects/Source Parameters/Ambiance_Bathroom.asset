@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04df4d00c00e0460894b79019fce6156, type: 3}
-  m_Name: Ambiance
+  m_Name: Ambiance_Bathroom
   m_EditorClassIdentifier: 
-  volume: 1
+  volume: 0.463
   pitch: 1
   looping: 1
   spatialBlend: 1
   dopplerLevel: 1
-  maxDistance: 7.5
+  maxDistance: 5
   outputAudioMixerGroup: {fileID: 2307699979309654403, guid: 147bfb30c2a8e45f59c69539285b9851, type: 2}
   outputAudioRolloffMode: 2
   customRolloffCurve:
