@@ -115,17 +115,17 @@ public class InventoryUIController : MonoBehaviour
                     if (isTemporarilyEmpty)
                     {
                         slotLabels[i].text += "\n(Right-click to cancel)";
-                        slotLabels[i].color = Color.yellow;
+                        //slotLabels[i].color = Color.yellow;
                     }
                     else
                     {
-                        slotLabels[i].color = Color.white;
+                        //slotLabels[i].color = Color.white;
                     }
                 }
                 else
                 {
                     slotLabels[i].text = "";
-                    slotLabels[i].color = Color.white;
+                    //slotLabels[i].color = Color.white;
                 }
             }
         }
