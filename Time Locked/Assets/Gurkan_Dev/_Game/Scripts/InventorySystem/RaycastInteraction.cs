@@ -26,7 +26,7 @@ public class RaycastInteraction : MonoBehaviour
             if (interactable != null)
             {
                 currentInteractable = interactable;
-                UIManager.Instance.ShowHint(interactable.GetInteractionText());
+                //UIManager.Instance.ShowHint(interactable.GetInteractionText());
 
                 // Outline aç
                 if (outline != null && outline != lastOutline)
@@ -40,7 +40,7 @@ public class RaycastInteraction : MonoBehaviour
                 {
                     var playerInventory = GetComponent<PlayerInventory>();
                     interactable.Interact(playerInventory);
-                    UIManager.Instance.HideHint();
+                    //UIManager.Instance.HideHint();
                 }
             }
             else
@@ -59,7 +59,7 @@ public class RaycastInteraction : MonoBehaviour
         if (currentInteractable != null)
         {
             currentInteractable = null;
-            UIManager.Instance.HideHint();
+            //UIManager.Instance.HideHint();
         }
 
         if (lastOutline != null)

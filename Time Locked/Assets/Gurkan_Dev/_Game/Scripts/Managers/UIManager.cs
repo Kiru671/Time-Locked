@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using TMPro;
 
 public class UIManager : MonoBehaviour
@@ -24,4 +24,4 @@ public class UIManager : MonoBehaviour
     {
         hintPanel.SetActive(false);
     }
-}
+}*/
