@@ -46,7 +46,7 @@ namespace AudioScripts
                     if (depthList.Contains(v))
                     {
                         depthList.Remove(v);
-                        UpdateVolumes(depthList[^1]);
+                        UpdateVolumes(depthList.Count > 0 ? depthList[^1] : null);
                     }
                 };
             }
@@ -93,10 +93,13 @@ namespace AudioScripts
             {
                 volume.currentVolume = vol;
             }
-
-            for (var i = depthList.Count - 1; i >= 0; i--)
+            
+            if (depthList.Count > 0)
             {
-                depthList[i].blockingVolume = depthList[i + depthList.Count == 1 ? 0 : 1];
+                for (var i = depthList.Count - 1; i >= 0; i--)
+                {
+                    depthList[i].blockingVolume = depthList[i + depthList.Count == 1 ? 0 : 1];
+                }
             }
         }
     }
