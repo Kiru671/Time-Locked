@@ -14,6 +14,7 @@ public class SequenceTracker : MonoBehaviour
     
     private List<string> currentSequence = new List<string>();
     private float lastNoteTime;
+    private bool isSequenceCompleted = false; // Sequence tamamlandı mı kontrolü
     
     // Singleton pattern için
     public static SequenceTracker Instance { get; private set; }
@@ -42,6 +43,10 @@ public class SequenceTracker : MonoBehaviour
     
     void Update()
     {
+        // Eğer sequence tamamlandıysa timeout kontrolü yapma
+        if (isSequenceCompleted)
+            return;
+            
         // Timeout kontrolü
         if (currentSequence.Count > 0 && Time.time - lastNoteTime > SequenceTimeout)
         {
@@ -55,6 +60,16 @@ public class SequenceTracker : MonoBehaviour
     
     public void OnNotePressed(string noteName)
     {
+        // Eğer sequence zaten tamamlandıysa, yeni notalar kabul etme
+        if (isSequenceCompleted)
+        {
+            /*if (ShowDebugLogs)
+            {
+                Debug.Log("Sequence zaten tamamlandı. Yeni notalar kabul edilmiyor.");
+            }*/
+            return;
+        }
+        
         lastNoteTime = Time.time;
         
         if (ShowDebugLogs)
@@ -123,22 +138,36 @@ public class SequenceTracker : MonoBehaviour
         Debug.Log("🎉 TEBRİKLER! İSTENEN NOTA SEKANSI TAMAMLANDI! 🎉");
         Debug.Log($"Tamamlanan sekans: {string.Join(" -> ", currentSequence)}");
         
+        // Sequence tamamlandı olarak işaretle
+        isSequenceCompleted = true;
+        
         // Burada istediğiniz ek işlemleri yapabilirsiniz
         // Örneğin: ses efekti çalma, UI güncellemesi, vb.
         
-        ResetSequence();
+        // ResetSequence(); // Artık otomatik olarak resetlenmeyecek
     }
     
     private void ResetSequence()
     {
         currentSequence.Clear();
+        isSequenceCompleted = false;
+    }
+    
+    // Manuel olarak sequence'ı resetlemek için public metod
+    public void ManualResetSequence()
+    {
+        ResetSequence();
+        if (ShowDebugLogs)
+        {
+            Debug.Log("Sequence manuel olarak resetlendi.");
+        }
     }
     
     // Public metodlar
     public void SetTargetSequence(string[] newSequence)
     {
         TargetSequence = newSequence;
-        ResetSequence();
+        ResetSequence(); // Bu artık isSequenceCompleted'ı da false yapar
         
         if (ShowDebugLogs)
         {
