@@ -27126,8 +27126,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 967aa1f66d6d5264995f5f5b197f0df7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hintPanel: {fileID: 1425036391}
-  hintText: {fileID: 34442400}
 --- !u!1 &444306711
 GameObject:
   m_ObjectHideFlags: 0
