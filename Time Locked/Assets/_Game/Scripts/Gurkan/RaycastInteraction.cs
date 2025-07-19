@@ -17,25 +17,19 @@ public class RaycastInteraction : MonoBehaviour
 
     private void Update()
     {
-        // If camera is not yet found, try to find it..
-        if (cam == null)
-        {
-            cam = Camera.main;
-            // If we still can't find it, return and try again next frame. This prevents the null reference.
-            if (cam == null) return;
-        }
-        
         
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactionLayer))
         {
+            
+            
             var interactable = hit.collider.GetComponent<IInteractable>();
             var outline = hit.collider.GetComponent<Outline>();
 
             if (interactable != null)
             {
                 currentInteractable = interactable;
-                UIManager.Instance.ShowHint(interactable.GetInteractionText());
+                //UIManager.Instance.ShowHint(interactable.GetInteractionText());
 
                 // Outline aç
                 if (outline != null && outline != lastOutline)
@@ -52,9 +46,18 @@ public class RaycastInteraction : MonoBehaviour
                     UIManager.Instance.HideHint();
                 }
             }
-            else
+        }
+        else if (Physics.Raycast(ray, out RaycastHit mirrorHit, interactionRange, LayerMask.GetMask("Mirror")))
+        {
+            Debug.Log("Mirror hit detected, ignoring interaction.");
+            UIManager.Instance.ShowHint("Press E to ");
+            
+            var interactable = mirrorHit.collider.GetComponent<Mirror>();
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                ClearHint();
+                var playerInventory = GetComponent<PlayerInventory>();
+                interactable.SendItem(playerInventory.heldItemManager.currentHeldWorldObject);
+                UIManager.Instance.HideHint();
             }
         }
         else

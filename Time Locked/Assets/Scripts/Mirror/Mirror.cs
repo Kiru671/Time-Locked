@@ -12,12 +12,14 @@ public class Mirror : MonoBehaviour
 
     public void Display(GameObject item)
     {
-        Instantiate(item, transform.position, transform.rotation, transform);
+        GameObject sentItem = 
+            Instantiate(item, transform.position - transform.up * 1.5f, Quaternion.identity, null);
+        sentItem.transform.localScale = item.transform.localScale * 10f;
+        sentItem.GetComponent<Collider>().enabled = true;
     }
 
-    public void OnTriggerEnter(Collider other)
+    public void SendItem(GameObject item)
     {
-        GameObject item = other.gameObject;
         if(item == null)
             return;
         mirrorManager.TriggerItems(item, transform.parent.GetComponent<MirrorGroup>().groupId);

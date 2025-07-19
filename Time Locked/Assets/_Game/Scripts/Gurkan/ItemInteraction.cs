@@ -1,10 +1,16 @@
 using UnityEngine;
-using Unity.Netcode;
 
-public class ItemInteraction : NetworkBehaviour, IInteractable
+public class ItemInteraction : MonoBehaviour, IInteractable
 {
+    [Header("Item Settings")]
     public InventoryItemData itemData;
     public string interactionText = "Press E to take";
+    
+    [Header("Pickup Settings")]
+    public bool removeColliderOnPickup = true;
+    public bool removeRigidbodyOnPickup = false;
+
+    private bool isPickedUp = false;
 
     public string GetInteractionText()
     {
@@ -13,37 +19,89 @@ public class ItemInteraction : NetworkBehaviour, IInteractable
 
     public void Interact(PlayerInventory player)
     {
-        player.TryAddItem(itemData);
+        if (isPickedUp) return;
 
-        // Tell the server to despawn this item so it disappears for everyone
-        if (IsServer)
+        // Objeyi envantere ekle ve dünya objesini de geç
+        if (player.TryAddItemWithWorldObject(itemData, gameObject))
         {
-            DespawnItem();
-        }
-        else
-        {
-            DespawnItemServerRpc();
+            PickupObject();
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void DespawnItemServerRpc(ServerRpcParams rpcParams = default)
+    private void PickupObject()
     {
-        DespawnItem();
+        isPickedUp = true;
+        
+        // Collider'ı kaldır (opsiyonel)
+        if (removeColliderOnPickup)
+        {
+            Collider col = GetComponent<Collider>();
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+        }
+        
+        // Rigidbody'yi kaldır (opsiyonel)
+        if (removeRigidbodyOnPickup)
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+            }
+        }
+        
+        // Objeyi deaktif et (destroy etme!)
+        gameObject.SetActive(false);
+        
+        Debug.Log($"📦 Picked up {itemData.itemName} (object deactivated, not destroyed)");
     }
 
-    private void DespawnItem()
+    // Objeyi tekrar dünyaya yerleştirme
+    public void PlaceInWorld(Vector3 position, Quaternion rotation)
     {
-        // Safely despawn the NetworkObject so all clients are updated
-        var netObj = GetComponent<NetworkObject>();
-        if (netObj != null && netObj.IsSpawned)
+        if (!isPickedUp) return;
+
+        transform.position = position;
+        transform.rotation = rotation;
+        transform.SetParent(null);
+        
+        // Componenentleri geri aktif et
+        if (removeColliderOnPickup)
         {
-            netObj.Despawn();
+            Collider col = GetComponent<Collider>();
+            if (col != null)
+            {
+                col.enabled = true;
+            }
         }
-        else
+        
+        if (removeRigidbodyOnPickup)
         {
-            // Fallback: destroy if not a networked object
-            Destroy(gameObject);
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+            }
         }
+        
+        gameObject.SetActive(true);
+        isPickedUp = false;
+        
+        Debug.Log($"📍 Placed {itemData.itemName} back in world");
+    }
+
+    // Reset metodu (test için)
+    public void ResetToOriginalState()
+    {
+        isPickedUp = false;
+        gameObject.SetActive(true);
+        
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = true;
+        
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = false;
     }
 }
