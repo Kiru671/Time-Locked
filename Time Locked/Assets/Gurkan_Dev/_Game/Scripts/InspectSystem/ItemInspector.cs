@@ -18,16 +18,23 @@ public class ItemInspector : MonoBehaviour
     private bool canInspect = false;
     
     private HeldItemManager heldItemManager; // HeldItemManager referansı
+    private PlayerInventory playerInventory; // PlayerInventory referansı
 
     void Start()
     {
         cam = Camera.main;
         fpsController = Object.FindFirstObjectByType<FirstPersonController>();
         heldItemManager = Object.FindFirstObjectByType<HeldItemManager>();
+        playerInventory = Object.FindFirstObjectByType<PlayerInventory>();
         
         if (heldItemManager == null)
         {
             Debug.LogWarning("HeldItemManager not found! Tab inspect for held items won't work properly.");
+        }
+        
+        if (playerInventory == null)
+        {
+            Debug.LogWarning("PlayerInventory not found! Cannot auto-cancel carrying when inspecting world items.");
         }
     }
 
@@ -41,6 +48,16 @@ public class ItemInspector : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F) && canInspect)
             {
                 TryInspectItem();
+            }
+            
+            // Tab tuşu ile eldeki eşyayı incele
+            if (Input.GetKeyDown(KeyCode.Tab) && heldItemManager != null && heldItemManager.IsHoldingItem)
+            {
+                GameObject heldItem = heldItemManager.GetHeldWorldObject();
+                if (heldItem != null)
+                {
+                    InspectItem(heldItem);
+                }
             }
         }
         else if (isInspecting)
@@ -56,12 +73,12 @@ public class ItemInspector : MonoBehaviour
             RotateItem();
 
             // Çıkış tuşları (context'e göre)
-            bool shouldExit = Input.GetKeyDown(KeyCode.Escape);
+            bool shouldExit = Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1); // Esc veya sağ tık
             
             if (isInspectingHeldItem)
             {
-                // Eldeki eşya için Tab veya Esc
-                shouldExit = shouldExit || Input.GetKeyDown(KeyCode.Tab);
+                // Eldeki eşya için sadece Esc veya sağ tık ile çıkış
+                // Tab tuşu sadece inspect moduna girmek için kullanılıyor
             }
             else
             {
@@ -95,6 +112,16 @@ public class ItemInspector : MonoBehaviour
 
     void TryInspectItem()
     {
+        // Elimizde obje varsa önce onu bırak (sağ tık etkisi)
+        if (heldItemManager != null && heldItemManager.IsHoldingItem && playerInventory != null)
+        {
+            string heldItemName = heldItemManager.CurrentHeldItem.itemName;
+            Debug.Log($"🚫 Dropping held item '{heldItemName}' to inspect world item");
+            
+            // PlayerInventory'deki CancelCarrying metodunu çağır (private olduğu için PutBackHeldItem kullan)
+            playerInventory.PutBackHeldItem();
+        }
+        
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactLayer))
         {
