@@ -5,6 +5,10 @@ public class ItemUsageZone : MonoBehaviour, IInteractable
 {
     public string requiredItemName;
     public UnityEvent onUse;
+    public bool recurrentUse = false;
+
+
+    private bool _itemPlaced;
 
     public string GetInteractionText()
     {
@@ -17,6 +21,9 @@ public class ItemUsageZone : MonoBehaviour, IInteractable
         {
             player.TryRemoveItem(requiredItemName);
             onUse.Invoke();
+            _itemPlaced = true;
         }
+        if(_itemPlaced && recurrentUse)
+            onUse.Invoke();
     }
 }

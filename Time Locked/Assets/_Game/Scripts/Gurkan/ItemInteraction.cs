@@ -1,7 +1,12 @@
 using UnityEngine;
+<<<<<<< Updated upstream
 using Unity.Netcode;
 
 public class ItemInteraction : NetworkBehaviour, IInteractable
+=======
+
+public class ItemInteraction : MonoBehaviour, IInteractable
+>>>>>>> Stashed changes
 {
     public InventoryItemData itemData;
     public string interactionText = "Press E to take";
@@ -14,6 +19,7 @@ public class ItemInteraction : NetworkBehaviour, IInteractable
     public void Interact(PlayerInventory player)
     {
         player.TryAddItem(itemData);
+<<<<<<< Updated upstream
 
         // Tell the server to despawn this item so it disappears for everyone
         if (IsServer)
@@ -45,5 +51,8 @@ public class ItemInteraction : NetworkBehaviour, IInteractable
             // Fallback: destroy if not a networked object
             Destroy(gameObject);
         }
+=======
+        Destroy(gameObject);
+>>>>>>> Stashed changes
     }
 }

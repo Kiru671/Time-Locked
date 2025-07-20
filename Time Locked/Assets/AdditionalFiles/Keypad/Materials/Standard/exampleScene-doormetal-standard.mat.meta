@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2b1da1e3b0af14c48b46d11f8cf01695
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 262151
+  packageName: Keypad FREE
+  packageVersion: 1.0.1
+  assetPath: Assets/Keypad/Materials/Standard/exampleScene-doormetal-standard.mat
+  uploadId: 657263

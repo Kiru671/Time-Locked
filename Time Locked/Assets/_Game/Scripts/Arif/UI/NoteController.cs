@@ -18,10 +18,26 @@ public class NoteController : MonoBehaviour
 
     [Space(10)] [SerializeField] [TextArea]
     private string noteText;
+<<<<<<< Updated upstream
+=======
+    
+    
+    [Space(10)] [SerializeField]
+    private Color color;
+    [Space(10)] [SerializeField]
+    private bool wrap;
+    [Space(10)] [SerializeField]
+    private bool autoSize;
+    
+>>>>>>> Stashed changes
 
     [Space(10)] [SerializeField] private UnityEvent openEvent; // For sound effects
     private bool isOpen;
     
+<<<<<<< Updated upstream
+=======
+   
+>>>>>>> Stashed changes
     
     void Update()
     {
@@ -33,6 +49,12 @@ public class NoteController : MonoBehaviour
     public void ShowNote(FirstPersonController player)
     {
         noteTextAreaUI.text = noteText;
+<<<<<<< Updated upstream
+=======
+        noteTextAreaUI.textWrappingMode = (wrap) ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
+        noteTextAreaUI.color = color;
+        noteTextAreaUI.enableAutoSizing = autoSize;
+>>>>>>> Stashed changes
         noteCanvas.SetActive(true);
         openEvent.Invoke();
         currentPlayer = player;
