@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04df4d00c00e0460894b79019fce6156, type: 3}
+  m_Name: MusicPercussion
+  m_EditorClassIdentifier: 
+  volume: 1
+  pitch: 1.23
+  looping: 0
+  spatialBlend: 1
+  dopplerLevel: 1
+  maxDistance: 90
+  outputAudioMixerGroup: {fileID: 2703019889999335610, guid: 147bfb30c2a8e45f59c69539285b9851, type: 2}
+  outputAudioRolloffMode: 2
+  customRolloffCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -4.65392
+      outSlope: -4.65392
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.18418843
+      value: 0.14280179
+      inSlope: -0.71711767
+      outSlope: -0.71711767
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.31899592
+      outWeight: 0.16749567
+    - serializedVersion: 3
+      time: 0.9912562
+      value: -0.028218824
+      inSlope: -0.080809
+      outSlope: -0.080809
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.25817934
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  playOnAwake: 0
