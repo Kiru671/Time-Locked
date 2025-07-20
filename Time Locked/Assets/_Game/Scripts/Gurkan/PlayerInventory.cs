@@ -19,6 +19,8 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
+        uiController = FindObjectOfType<InventoryUIController>();
+        
         // ItemInspector'ı otomatik bul
         if (itemInspector == null)
         {

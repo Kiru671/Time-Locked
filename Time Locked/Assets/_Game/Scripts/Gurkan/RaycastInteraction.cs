@@ -21,8 +21,6 @@ public class RaycastInteraction : MonoBehaviour
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactionLayer))
         {
-            
-            
             var interactable = hit.collider.GetComponent<IInteractable>();
             var outline = hit.collider.GetComponent<Outline>();
 
@@ -49,14 +47,13 @@ public class RaycastInteraction : MonoBehaviour
         }
         else if (Physics.Raycast(ray, out RaycastHit mirrorHit, interactionRange, LayerMask.GetMask("Mirror")))
         {
-            Debug.Log("Mirror hit detected, ignoring interaction.");
             UIManager.Instance.ShowHint("Press E to ");
             
             var interactable = mirrorHit.collider.GetComponent<Mirror>();
             if (Input.GetKeyDown(KeyCode.E))
             {
                 var playerInventory = GetComponent<PlayerInventory>();
-                interactable.SendItem(playerInventory.heldItemManager.currentHeldWorldObject);
+                interactable.SendItem(playerInventory.heldItemManager.currentHeldNetworkItem.NetworkObjectId);
                 UIManager.Instance.HideHint();
             }
         }

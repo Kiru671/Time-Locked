@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MirrorGroup: MonoBehaviour
+public class MirrorGroup: NetworkBehaviour
 {
     private List<Mirror> mirrorList;
     private Mirror[] mirrors;
@@ -14,11 +15,13 @@ public class MirrorGroup: MonoBehaviour
         mirrorList = new List<Mirror>(mirrors);
     }
     
-    public void ShowItem(GameObject item)
+    [ServerRpc(RequireOwnership = false)]
+    public void ShowItemServerRPC(ulong itemId)
     {
+        Debug.LogWarning("Showing items in group: " + groupId);
         foreach (var mirror in mirrors)
         {
-            mirror.Display(item);
+            mirror.DisplayClientRpc(itemId);
         }
     }
 }

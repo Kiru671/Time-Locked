@@ -1,5 +1,7 @@
 using UnityEngine;
 using StarterAssets;
+using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class HeldItemManager : MonoBehaviour
 {
@@ -41,12 +43,20 @@ public class HeldItemManager : MonoBehaviour
     private StarterAssetsInputs fpsInput; // FPS Controller input'u
 
     public InventoryItemData CurrentHeldItem => currentHeldItem;
+    public NetworkObject currentHeldNetworkItem;
     public int HeldItemSlotIndex => heldItemSlotIndex;
     public bool IsHoldingItem => currentHeldItem != null;
     public bool IsInInspectMode => isInInspectMode;
 
     private void Start()
     {
+        NetworkObject hand = handTransform.GetComponent<NetworkObject>();
+        hand.Spawn();
+        Camera maincam = Camera.main;
+        if (maincam != null) maincam.GetComponent<NetworkObject>().Spawn();
+        hand.transform.parent = Camera.main.transform;
+        
+        
         // FPS Controller'ı otomatik bul
         if (autoFindController && fpsController == null)
         {
@@ -142,6 +152,8 @@ public class HeldItemManager : MonoBehaviour
         }
 
         currentHeldWorldObject = worldObject;
+        currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
+        
         
         // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)
         objectOriginalScale = worldObject.transform.localScale;

@@ -72,6 +72,8 @@ public class GamePlayerSpawner : NetworkBehaviour
         Transform sp = GetNextSpawnPoint();
         GameObject playerInstance = Instantiate(playerPrefab, sp.position, sp.rotation);
         playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, false);
+        
+        
 
         // Assign player color (orange for the first player, blue for all others)
         bool assignOrange = !firstPlayerAssigned;

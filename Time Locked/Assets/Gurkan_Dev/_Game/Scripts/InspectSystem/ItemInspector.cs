@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using StarterAssets;
 
@@ -22,6 +23,7 @@ public class ItemInspector : MonoBehaviour
 
     void Start()
     {
+        promptUI = FindObjectsOfType<GameObject>(true).FirstOrDefault(obj => obj.name == "Prompt");
         cam = Camera.main;
         fpsController = Object.FindFirstObjectByType<FirstPersonController>();
         heldItemManager = Object.FindFirstObjectByType<HeldItemManager>();

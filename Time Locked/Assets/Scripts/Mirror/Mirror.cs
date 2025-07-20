@@ -1,7 +1,8 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Mirror : MonoBehaviour
+public class Mirror : NetworkBehaviour
 {
     private MirrorManager mirrorManager;
 
@@ -10,18 +11,21 @@ public class Mirror : MonoBehaviour
         mirrorManager = FindAnyObjectByType<MirrorManager>();
     }
 
-    public void Display(GameObject item)
+    [ClientRpc]
+    public void DisplayClientRpc(ulong itemId)
     {
-        GameObject sentItem = 
+        NetworkObject item = null;
+        bool found = NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemId, out item);
+
+        NetworkObject sentItem = 
             Instantiate(item, transform.position - transform.up * 1.5f, Quaternion.identity, null);
         sentItem.transform.localScale = item.transform.localScale * 10f;
         sentItem.GetComponent<Collider>().enabled = true;
     }
-
-    public void SendItem(GameObject item)
+    
+    public void SendItem(ulong itemId)
     {
-        if(item == null)
-            return;
-        mirrorManager.TriggerItems(item, transform.parent.GetComponent<MirrorGroup>().groupId);
+        Debug.LogWarning("Item sent");
+        mirrorManager.TriggerItems(itemId, transform.parent.GetComponent<MirrorGroup>().groupId);
     }
 }
