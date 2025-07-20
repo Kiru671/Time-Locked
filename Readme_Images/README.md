@@ -5,11 +5,11 @@ TBD (Group 13 for now)
 
 | <br> | **Name** | **Title** | **Socials** |
 |------|----------|-----------|-------------|
-| <img src="Readme_Images/Gürkan_Profile_Pic.jpg" width="80"/> | Gürkan Bacak | Product Owner | <a href="https://www.linkedin.com/in/gurkanbacak"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
-| <img src="Readme_Images/Kerem_Profile_Pic.jpg" width="80"/> | Kerem Yıldız | Scrum Master | <a href="https://linkedin.com/in/kiruyildiz"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
-| <img src="Readme_Images/Sevde_Profile_Pic.jpg" width="80"/> | Sevde Nur Taşkın | Developer | <a href="https://linkedin.com/in/sevde-nur-taskin"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
-| <img src="Readme_Images/Zehra_Profile_Pic.jpg" width="80"/> | Zehra Dilşen | Developer | <a href="https://www.linkedin.com/in/zehra-dil%C5%9Fen-1285a3339/"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
-| <img src="Readme_Images/Arif_Profile_Pic.jpg" width="80"/> | Arif Dağ | Developer | <a href="https://www.linkedin.com/in/arifdag/"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
+| <img src="Gürkan_Profile_Pic.jpg" width="80"/> | Gürkan Bacak | Product Owner | <a href="https://www.linkedin.com/in/gurkanbacak"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
+| <img src="Kerem_Profile_Pic.jpg" width="80"/> | Kerem Yıldız | Scrum Master | <a href="https://linkedin.com/in/kiruyildiz"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
+| <img src="Sevde_Profile_Pic.jpg" width="80"/> | Sevde Nur Taşkın | Developer | <a href="https://linkedin.com/in/sevde-nur-taskin"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
+| <img src="Zehra_Profile_Pic.jpg" width="80"/> | Zehra Dilşen | Developer | <a href="https://www.linkedin.com/in/zehra-dil%C5%9Fen-1285a3339/"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
+| <img src="Arif_Profile_Pic.jpg" width="80"/> | Arif Dağ | Developer | <a href="https://www.linkedin.com/in/arifdag/"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="24"/></a> |
 
 
 ## Game Name
@@ -79,32 +79,32 @@ Burgundy for tasks.
 
 <details> <summary><h3>Daily Scrum Chat Screenshots:</h3></summary>
   
-  ![Screenshot 1](Readme_Images/Scrum_1.png)
-  ![Screenshot 4](Readme_Images/Meets.png)
-  ![Screenshot 2](Readme_Images/Scrum_2.png) 
-  ![Screenshot 3](Readme_Images/Scrum_3.png)
-  ![Screenshot 4](Readme_Images/Scrum_4.png)
+  ![Screenshot 1](Scrum_1.png)
+  ![Screenshot 4](Meets.png)
+  ![Screenshot 2](Scrum_2.png) 
+  ![Screenshot 3](Scrum_3.png)
+  ![Screenshot 4](Scrum_4.png)
 
   </details>
 
 
 - **Previous Sprint Board**
-![Trello Board](Readme_Images/Previous_Trello_Board.png)
+![Trello Board](Previous_Trello_Board.png)
 
 - **Sprint Board**
-![Trello Board](Readme_Images/Trello_Board.png)
+![Trello Board](Trello_Board.png)
 
 
 
 <details> <summary><h3>Product Progress Screenshots:</h3></summary>
   
-  ![Screenshot 1](Readme_Images/UI_1.jpg)
-  ![Screenshot 2](Readme_Images/UI_2.jpg) 
-  ![Screenshot 3](Readme_Images/UI_3.jpg)
-  ![Screenshot 4](Readme_Images/Level_1.jpg)
-  ![Screenshot 5](Readme_Images/Level_3.jpg)
-  ![Screenshot 4](Readme_Images/Level_2.jpg)
-  ![Screenshot 5](Readme_Images/Level_4.jpg)
+  ![Screenshot 1](UI_1.jpg)
+  ![Screenshot 2](UI_2.jpg) 
+  ![Screenshot 3](UI_3.jpg)
+  ![Screenshot 4](Level_1.jpg)
+  ![Screenshot 5](Level_3.jpg)
+  ![Screenshot 4](Level_2.jpg)
+  ![Screenshot 5](Level_4.jpg)
 
   * Networking & Mirror example:
 
@@ -144,31 +144,29 @@ We decided to be more careful updating the next task backlog and not underestima
 
 <details> <summary><h3>Daily Scrum Chat Screenshots:</h3></summary>
   
-  ![Screenshot 1](Readme_Images/Sprint_2.png)
-  ![Screenshot 2](Readme_Images/Sprint_2_1.png)
-  ![Screenshot 3](Readme_Images/Sprint_2_2.png) 
-  ![Screenshot 4](Readme_Images/dc.png) 
+  ![Screenshot 1](Sprint_2.png)
+  ![Screenshot 2](Sprint_2_1.png)
+  ![Screenshot 3](Sprint_2_2.png) 
+  ![Screenshot 4](dc.png) 
 
 
 </details>
 
 - **Sprint Board Update**
-![Trello Board](Readme_Images/TrelloBoard_Sprint_2.png)
+![Trello Board](TrelloBoard_Sprint_2.png)
 
 <details> <summary><h3>Product Progress Screenshots:</h3></summary>
   
-  ![Screenshot 1](Readme_Images/piano.jpg)
-  ![Screenshot 2](Readme_Images/ses.jpeg) 
-  ![Screenshot 3](Readme_Images/not.jpg)
-  ![Screenshot 4](Readme_Images/wp_room.jpg)
-  ![Screenshot 5](Readme_Images/wp_room_2.jpg)
-  ![Screenshot 6](Readme_Images/wpgurkan.jpg)
-  ![Screenshot 7](Readme_Images/wpgurkan2.jpg)
+  ![Screenshot 1](piano.jpg)
+  ![Screenshot 2](ses.jpeg) 
+  ![Screenshot 3](not.jpg)
+  ![Screenshot 4](wp_room.jpg)
+  ![Screenshot 5](wp_room_2.jpg)
+  ![Screenshot 6](wpgurkan.jpg)
+  ![Screenshot 7](wpgurkan2.jpg)
 
   * **Story & Puzzle Progression Notes**: 
     https://www.notion.so/Hikaye-226ec72267a7806091a1cc10aeffc747
-
-
     https://www.notion.so/Hikaye-2-231ec72267a7800b9a40c7cc98117fed
 
 
@@ -177,7 +175,7 @@ We decided to be more careful updating the next task backlog and not underestima
   * **Sprint Review:**
 Team clearly lost communication during some bits of development. We might have grown overconfident.
 
-Puzzle development still went well. Although some systems still need time to be ***fully*** integrated, which wasn't the plan.
+Puzzle development still went well. Although some systems still need time to be ***fully*** integrated, which was not the plan.
 
 Team did not expect to have an increased need of communication due to deliverables having to be integrated with one another and failed to adapt.
 
@@ -190,7 +188,7 @@ But belief remains firm overall goals are still achievable.
 
 
 * **Sprint Retrospective:**
-Since most of the hassle of integration has been overcome, although at a cost, a need for stricter and clearer requirements on the development side were deemed unnecessary for the upcoming sprint.
+Since most of the hassle of integration has been overcome, although at a cost, a need for stricter and clearer requirements on the development side was deemed not necessary for the upcoming sprint.
 
 This does not mean the lack of communication is acceptable however. The team all confirmed that they would attend daily scrums and do their best not to miss it.
 
