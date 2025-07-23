@@ -163,11 +163,27 @@ public class HeldItemManager : MonoBehaviour
             Debug.LogWarning("Hand transform not assigned!");
             return;
         }
-
-        currentHeldWorldObject = worldObject;
-        currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
         
-        DecentralizedSpawner.Instance.RequestSpawn(currentHeldNetworkItem,handOffset,Quaternion.Euler(handRotation),objectOriginalScale * handScale,handTransform.GetComponent<NetworkObject>());
+        // 0) save the true original scale
+        objectOriginalScale = worldObject.transform.localScale;
+        var spawnScale = objectOriginalScale * handScale;
+
+        // 1) compute the world‐space pivot
+        var spawnPos = handTransform.TransformPoint(handOffset);
+
+        // 2) grab the network object
+        currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
+        var prefabAsset = currentHeldItem.prefab;
+
+        // 3) ask the server to spawn it
+        DecentralizedSpawner.Instance.RequestSpawn(
+            prefabAsset,
+            spawnPos,                           // now in world‐space
+            Quaternion.Euler(handRotation),
+            spawnScale,                         // now non‐zero
+            handTransform.GetComponent<NetworkObject>()
+        );
+
          /* // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)
         objectOriginalScale = worldObject.transform.localScale;
         Debug.Log($"📦 Saved original scale: {objectOriginalScale} for {worldObject.name}");

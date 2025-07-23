@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 185789730
+  GlobalObjectIdHash: 3566719295
   InScenePlacedSourceGlobalObjectIdHash: 4201164272
   DeferredDespawnTick: 0
   Ownership: 1
@@ -255,8 +255,8 @@ MonoBehaviour:
   SprintSpeed: 6
   RotationSpeed: 1
   SpeedChangeRate: 10
-  JumpHeight: 1.2
-  Gravity: -15
+  JumpHeight: 0
+  Gravity: -100000
   JumpTimeout: 0.1
   FallTimeout: 0.15
   Grounded: 1
@@ -542,7 +542,6 @@ MonoBehaviour:
     m_Bits: 64
   inspectHolder: {fileID: 486747964191550620}
   rotateSpeed: 100
-  promptUI: {fileID: 0}
 --- !u!114 &8909017416954996962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -633,7 +632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3491144518
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -690,7 +689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 124016832
+  GlobalObjectIdHash: 1160353453
   InScenePlacedSourceGlobalObjectIdHash: 4201164272
   DeferredDespawnTick: 0
   Ownership: 1
@@ -800,7 +799,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 2732490626
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
