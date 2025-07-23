@@ -167,10 +167,8 @@ public class HeldItemManager : MonoBehaviour
         currentHeldWorldObject = worldObject;
         currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
         
-        
-        
-        
-        // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)
+        DecentralizedSpawner.Instance.RequestSpawn(currentHeldNetworkItem,handOffset,Quaternion.Euler(handRotation),objectOriginalScale * handScale,handTransform.GetComponent<NetworkObject>());
+         /* // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)
         objectOriginalScale = worldObject.transform.localScale;
         Debug.Log($"📦 Saved original scale: {objectOriginalScale} for {worldObject.name}");
         
@@ -181,9 +179,11 @@ public class HeldItemManager : MonoBehaviour
         worldObject.transform.localRotation = Quaternion.Euler(handRotation);
         worldObject.transform.localScale = objectOriginalScale * handScale; // Orijinal scale * handScale
         
+        
+        
         // Orijinal pozisyon ve rotasyonu kaydet (animasyon için)
         originalLocalPosition = handOffset;
-        originalLocalRotation = handRotation;
+        originalLocalRotation = handRotation;  */
         
         // Objeyi aktif et (pickup sırasında deaktif edilmişti)
         worldObject.SetActive(true);
