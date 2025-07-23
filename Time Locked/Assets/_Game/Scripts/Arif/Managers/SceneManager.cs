@@ -11,7 +11,6 @@ public class SceneManager : MonoBehaviour
 
     [Header("Loading Settings")]
     [SerializeField] private float loadingDelay = 0.5f;
-
     private void Awake()
     {
         // Singleton

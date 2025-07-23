@@ -2,6 +2,7 @@ using UnityEngine;
 using StarterAssets;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 
 public class HeldItemManager : MonoBehaviour
 {
@@ -47,15 +48,16 @@ public class HeldItemManager : MonoBehaviour
     public int HeldItemSlotIndex => heldItemSlotIndex;
     public bool IsHoldingItem => currentHeldItem != null;
     public bool IsInInspectMode => isInInspectMode;
-
+    
     private void Start()
     {
         NetworkObject hand = handTransform.GetComponent<NetworkObject>();
         hand.Spawn();
+        handTransform.transform.parent = transform;
         Camera maincam = Camera.main;
         if (maincam != null) maincam.GetComponent<NetworkObject>().Spawn();
-        hand.transform.parent = Camera.main.transform;
-        
+        maincam.transform.parent = transform;
+   
         
         // FPS Controller'ı otomatik bul
         if (autoFindController && fpsController == null)
@@ -83,6 +85,16 @@ public class HeldItemManager : MonoBehaviour
         if (currentHeldWorldObject != null && handTransform != null && !isInInspectMode)
         {
             UpdateHeldItemAnimation();
+        }
+
+        if (currentHeldWorldObject!= null && currentHeldWorldObject.CompareTag("Readable"))
+        {
+            if(Input.GetKeyDown(KeyCode.F))
+            {
+                FirstPersonController fpc = GetComponent<FirstPersonController>();
+                NoteController noteController = currentHeldWorldObject.GetComponent<NoteController>();
+                noteController.ShowNote(fpc);
+            }
         }
     }
 
@@ -153,6 +165,8 @@ public class HeldItemManager : MonoBehaviour
 
         currentHeldWorldObject = worldObject;
         currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
+        
+        
         
         
         // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)

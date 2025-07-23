@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class RaycastInteraction : MonoBehaviour
+public class RaycastInteraction : NetworkBehaviour
 {
     public float interactionRange = 4f;
     public LayerMask interactionLayer;
@@ -17,6 +18,12 @@ public class RaycastInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (!IsLocalPlayer) return;
+        if (cam == null)
+        {
+            cam = Camera.main;
+            if (cam == null) return;
+        }
         
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactionLayer))

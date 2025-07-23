@@ -23,7 +23,10 @@ public class ItemInspector : MonoBehaviour
 
     void Start()
     {
-        promptUI = FindObjectsOfType<GameObject>(true).FirstOrDefault(obj => obj.name == "Prompt");
+        if (promptUI == null)
+        {
+            promptUI = GameObject.Find("Prompt");
+        }
         cam = Camera.main;
         fpsController = Object.FindFirstObjectByType<FirstPersonController>();
         heldItemManager = Object.FindFirstObjectByType<HeldItemManager>();
@@ -42,6 +45,10 @@ public class ItemInspector : MonoBehaviour
 
     void Update()
     {
+        if (promptUI == null)
+        {
+            promptUI = GameObject.Find("Prompt");
+        }
         if (!isInspecting)
         {
             ShowPromptIfLookingAtInspectable();
@@ -97,6 +104,13 @@ public class ItemInspector : MonoBehaviour
 
     void ShowPromptIfLookingAtInspectable()
     {
+        // Null‑check and re‑acquire main camera
+        if (cam == null)
+        {
+            cam = Camera.main;                               
+            if (cam == null) return;
+        }
+        
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactLayer))
         {

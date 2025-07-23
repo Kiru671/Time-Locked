@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d5d26a31876c8b244b1337ec8a560446
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 262151
+  packageName: Keypad FREE
+  packageVersion: 1.0.1
+  assetPath: Assets/Keypad/Materials/Urp/keypad_panelmaterial_urp.mat
+  uploadId: 657263
