@@ -17,6 +17,11 @@ public class RaycastInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (cam == null)
+        {
+            cam = Camera.main;
+            if (cam == null) return;
+        }
         
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactionLayer))

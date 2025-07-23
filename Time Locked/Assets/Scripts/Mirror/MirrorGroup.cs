@@ -21,7 +21,9 @@ public class MirrorGroup: NetworkBehaviour
         Debug.LogWarning("Showing items in group: " + groupId);
         foreach (var mirror in mirrors)
         {
-            mirror.DisplayClientRpc(itemId);
+            // Call DisplayServerRpc, NOT DisplayClientRpc
+            Debug.Log("Calling DisplayServerRpc on mirror");
+            mirror.DisplayServerRpc(itemId);
         }
     }
 }
