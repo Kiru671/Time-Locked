@@ -26,11 +26,4 @@ public class PlayerNetworkManager : NetworkBehaviour
 
         InventoryUIController.Instance.AssignToInventory(inv);
     }
-
-    [ServerRpc]
-    public static NetworkObject RequestObjectSpawnServerRpc(NetworkObject obj)
-    {
-        obj.Spawn();
-        return obj;
-    }
 }
