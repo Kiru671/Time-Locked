@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Netcode;
 
-public class PlayerInventory : MonoBehaviour
+public class PlayerInventory : NetworkBehaviour
 {
     [Header("Components")]
     public InventorySystem inventorySystem;
@@ -19,7 +20,12 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        uiController = FindObjectOfType<InventoryUIController>();
+        if (uiController == null)
+            uiController = FindObjectOfType<InventoryUIController>();
+        if (heldItemManager == null)
+            heldItemManager = GetComponent<HeldItemManager>();
+        if (inventorySystem == null)
+            inventorySystem = FindObjectOfType<InventorySystem>();
         
         // ItemInspector'ı otomatik bul
         if (itemInspector == null)
@@ -33,6 +39,13 @@ public class PlayerInventory : MonoBehaviour
 
         uiController.RefreshUI(inventorySystem, heldItemManager);
         ShowInitialInstructions();
+    }
+    public override void OnNetworkSpawn() {
+        if (IsLocalPlayer) {
+            uiController = FindObjectOfType<InventoryUIController>();
+            heldItemManager = GetComponent<HeldItemManager>();
+            inventorySystem = FindObjectOfType<InventorySystem>();
+        }
     }
 
     private void Update()
@@ -206,6 +219,7 @@ public class PlayerInventory : MonoBehaviour
     // Dünya objesi ile eşya ekleme (ItemInteraction'dan çağrılır)
     public bool TryAddItemWithWorldObject(InventoryItemData item, GameObject worldObject)
     {
+        
         if (inventorySystem.AddItem(item))
         {
             // Hangi slota eklediğini bul
@@ -226,7 +240,8 @@ public class PlayerInventory : MonoBehaviour
                 Debug.Log($"✅ Added {item.itemName} to slot {slotIndex + 1} with world object");
             }
 
-            uiController.RefreshUI(inventorySystem, heldItemManager);
+            if (uiController != null)
+                uiController.RefreshUI(inventorySystem, heldItemManager);
             return true;
         }
         else

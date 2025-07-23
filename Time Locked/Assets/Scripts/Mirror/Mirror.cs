@@ -44,7 +44,8 @@ public class Mirror : NetworkBehaviour
             collider.enabled = true;
         
         // CRITICAL: Remove NetworkObject component from the copy
-        NetworkObject networkObject = itemCopy.GetComponent<NetworkObject>();
+        /*
+         * NetworkObject networkObject = itemCopy.GetComponent<NetworkObject>();
         if (networkObject != null)
         {
             Debug.Log("Removing NetworkObject component from copy");
@@ -54,6 +55,7 @@ public class Mirror : NetworkBehaviour
         {
             Debug.Log("No NetworkObject component found on copy");
         }
+         */
         
         // DO NOT CALL NetworkObject.Spawn() - this was causing the error
         Debug.Log("Copy created successfully without network spawning");
@@ -95,12 +97,14 @@ public class Mirror : NetworkBehaviour
         itemCopy.transform.localScale = scale;
         
         // Remove NetworkObject component
-        NetworkObject networkObject = itemCopy.GetComponent<NetworkObject>();
+        /*
+         * NetworkObject networkObject = itemCopy.GetComponent<NetworkObject>();
         if (networkObject != null)
         {
             Debug.Log("Removing NetworkObject component from client copy");
             DestroyImmediate(networkObject);
         }
+         */
         
         // Enable collider
         Collider collider = itemCopy.GetComponent<Collider>();

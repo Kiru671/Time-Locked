@@ -50,7 +50,7 @@
 }</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/../../bootcamp/Builds/v66\Time Locked.exe" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/../../bootcamp/Builds/v77\Time Locked.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="C:\Users\rockw\Downloads\bootcamp\Builds\v45" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -117,6 +117,7 @@
       <workItem from="1753167357646" duration="1099000" />
       <workItem from="1753174642230" duration="3541000" />
       <workItem from="1753208600784" duration="1646000" />
+      <workItem from="1753251913328" duration="7147000" />
     </task>
     <servers />
   </component>

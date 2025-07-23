@@ -53,9 +53,10 @@ public class HeldItemManager : MonoBehaviour
     {
         NetworkObject hand = handTransform.GetComponent<NetworkObject>();
         hand.Spawn();
+        handTransform.transform.parent = transform;
         Camera maincam = Camera.main;
         if (maincam != null) maincam.GetComponent<NetworkObject>().Spawn();
-        hand.transform.parent = Camera.main.transform;
+        maincam.transform.parent = transform;
    
         
         // FPS Controller'ı otomatik bul
