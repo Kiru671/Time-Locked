@@ -11,6 +11,13 @@ public class RaycastInteraction : NetworkBehaviour
     private Outline lastOutline;
 
 
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            this.enabled = false;
+        }
+    }
     private void Start()
     {
         cam = Camera.main;

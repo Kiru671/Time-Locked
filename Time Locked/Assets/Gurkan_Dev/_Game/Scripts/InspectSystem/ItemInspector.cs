@@ -14,8 +14,7 @@ public class ItemInspector : MonoBehaviour
     private Inspectable currentItem;
     private bool isInspecting = false;
     private bool isInspectingHeldItem = false; // Eldeki eşyayı mı inspect ediyoruz
-
-    public GameObject promptUI;
+    
     private bool canInspect = false;
     
     private HeldItemManager heldItemManager; // HeldItemManager referansı
@@ -23,10 +22,6 @@ public class ItemInspector : MonoBehaviour
 
     void Start()
     {
-        if (promptUI == null)
-        {
-            promptUI = GameObject.Find("Prompt");
-        }
         cam = Camera.main;
         fpsController = Object.FindFirstObjectByType<FirstPersonController>();
         heldItemManager = Object.FindFirstObjectByType<HeldItemManager>();
@@ -45,10 +40,6 @@ public class ItemInspector : MonoBehaviour
 
     void Update()
     {
-        if (promptUI == null)
-        {
-            promptUI = GameObject.Find("Prompt");
-        }
         if (!isInspecting)
         {
             ShowPromptIfLookingAtInspectable();
@@ -116,13 +107,11 @@ public class ItemInspector : MonoBehaviour
         {
             if (hit.collider.GetComponent<Inspectable>())
             {
-                promptUI.SetActive(true);
                 canInspect = true;
                 return;
             }
         }
-
-        promptUI.SetActive(false);
+        
         canInspect = false;
     }
 
@@ -154,7 +143,6 @@ public class ItemInspector : MonoBehaviour
                 isInspecting = true;
 
                 fpsController.canLook = false; // kamera dönmesini durdur
-                promptUI.SetActive(false);
                 
                 Debug.Log($"🔍 Inspecting {currentItem.name} (Press F or Esc to stop)");
             }

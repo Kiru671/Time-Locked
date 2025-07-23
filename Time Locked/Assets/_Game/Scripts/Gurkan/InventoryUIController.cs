@@ -5,6 +5,8 @@ using DG.Tweening;
 
 public class InventoryUIController : MonoBehaviour
 {
+    public static InventoryUIController Instance { get; private set; }
+    
     [Header("Slot Images (4 adet)")]
     [SerializeField] private Image[] slotImages;
 
@@ -31,8 +33,17 @@ public class InventoryUIController : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
         // Orijinal scale değerlerini kaydet
         SaveOriginalScales();
+        PlayerInventory.OnSpawned += AssignToInventory;
+    }
+
+    public void AssignToInventory(PlayerInventory inv)
+    {
+        inv.Initialize(this);
+        Debug.Log("Assigned InventoryUIController to PlayerInventory.");
     }
 
     private void SaveOriginalScales()
@@ -247,6 +258,8 @@ public class InventoryUIController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (Instance == this) Instance = null;
+        
         // Tween'leri temizle
         for (int i = 0; i < slotImages.Length; i++)
         {

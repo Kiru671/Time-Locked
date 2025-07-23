@@ -1,8 +1,12 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEngine.PlayerLoop;
 
-public class PlayerInventory : NetworkBehaviour
+public class PlayerInventory : MonoBehaviour
 {
     [Header("Components")]
     public InventorySystem inventorySystem;
@@ -18,9 +22,23 @@ public class PlayerInventory : NetworkBehaviour
     // Her slot için dünya objesini sakla
     private Dictionary<int, GameObject> slotWorldObjects = new Dictionary<int, GameObject>();
 
-    private void Start()
+    public static event Action<PlayerInventory> OnSpawned;
+
+    public void Initialize(InventoryUIController uiController)
     {
-        if (uiController == null)
+        this.uiController = uiController;
+        Debug.Log("Assigned UI Controller to PlayerInventory");
+    }
+
+    private IEnumerator Start()
+    {
+        // Wait until uiController is assigned
+        while (uiController == null)
+            yield return null;
+
+        
+        OnSpawned?.Invoke(this);
+        if(uiController == null)
             uiController = FindObjectOfType<InventoryUIController>();
         if (heldItemManager == null)
             heldItemManager = GetComponent<HeldItemManager>();
@@ -39,13 +57,6 @@ public class PlayerInventory : NetworkBehaviour
 
         uiController.RefreshUI(inventorySystem, heldItemManager);
         ShowInitialInstructions();
-    }
-    public override void OnNetworkSpawn() {
-        if (IsLocalPlayer) {
-            uiController = FindObjectOfType<InventoryUIController>();
-            heldItemManager = GetComponent<HeldItemManager>();
-            inventorySystem = FindObjectOfType<InventorySystem>();
-        }
     }
 
     private void Update()

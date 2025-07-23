@@ -53,12 +53,13 @@ public class HeldItemManager : MonoBehaviour
     {
         NetworkObject hand = handTransform.GetComponent<NetworkObject>();
         hand.Spawn();
-        handTransform.transform.parent = transform;
         Camera maincam = Camera.main;
         if (maincam != null) maincam.GetComponent<NetworkObject>().Spawn();
-        maincam.transform.parent = transform;
-   
-        
+        if (maincam != null) maincam.transform.parent = transform;
+        handTransform.transform.parent = maincam.transform;
+        Debug.Log("Camera is" + (maincam != null ? " assigned" : " not assigned") + " to HeldItemManager");
+
+
         // FPS Controller'ı otomatik bul
         if (autoFindController && fpsController == null)
         {
@@ -174,6 +175,7 @@ public class HeldItemManager : MonoBehaviour
         Debug.Log($"📦 Saved original scale: {objectOriginalScale} for {worldObject.name}");
         
         // Objeyi elin pozisyonuna getir
+        worldObject.GetComponent<NetworkObject>().Spawn();
         worldObject.transform.SetParent(handTransform);
         worldObject.transform.localPosition = handOffset;
         worldObject.transform.localRotation = Quaternion.Euler(handRotation);
