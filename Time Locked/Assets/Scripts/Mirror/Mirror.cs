@@ -13,43 +13,39 @@ public class Mirror : NetworkBehaviour
         mirrorManager = FindAnyObjectByType<MirrorManager>();
         localUp = transform.TransformDirection(Vector3.up);
     }
-
+    
     [ServerRpc(RequireOwnership = false)]
     public void DisplayServerRpc(ulong itemId)
     {
         NetworkObject originalItem = null;
         bool found = NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemId, out originalItem);
-    
+
         if (!found || originalItem == null) return;
 
         GameObject prefabToSpawn = FindMatchingPrefab(originalItem);
         if (prefabToSpawn == null) return;
 
-        // Create as child of mirror
-        GameObject itemCopy = Instantiate(prefabToSpawn, transform);
+        // Create the copy (don't parent it to mirror initially)
+        GameObject itemCopy = Instantiate(prefabToSpawn);
+
+        // Calculate the world position where we want the item to appear (in front of mirror)
+        Vector3 spawnWorldPosition = transform.position + (-localUp * 1.5f);
     
-        // Get the world position before spawning
-        Vector3 worldPos = itemCopy.transform.position;
-        Vector3 worldScale = itemCopy.transform.lossyScale;
-    
-        // Unparent before spawning
-        itemCopy.transform.SetParent(null);
-        itemCopy.transform.position = worldPos;
-        itemCopy.transform.localScale = worldScale;
-    
-        // Now spawn
+        // Set the world position and rotation BEFORE spawning
+        itemCopy.transform.position = spawnWorldPosition;
+        itemCopy.transform.rotation = Quaternion.identity;
+        itemCopy.transform.localScale = originalItem.transform.localScale * 10f;
+
+        // Now spawn the NetworkObject
         NetworkObject itemNetObj = itemCopy.GetComponent<NetworkObject>();
         itemNetObj.Spawn();
-        
-        // Set local position relative to mirror
-        itemCopy.transform.localPosition = (-localUp  * 1.5f)+gameObject.transform.position;
-        itemCopy.transform.localRotation = Quaternion.identity;
-        itemCopy.transform.localScale = originalItem.transform.localScale * 10f;
-    
-        // Enable collider
+
+        // Enable collider after spawning
         Collider collider = itemCopy.GetComponent<Collider>();
         if (collider != null)
             collider.enabled = true;
+        
+        Debug.Log($"Spawned mirrored item at world position: {spawnWorldPosition}");
     }
     
     private GameObject FindMatchingPrefab(NetworkObject spawnedInstance)
