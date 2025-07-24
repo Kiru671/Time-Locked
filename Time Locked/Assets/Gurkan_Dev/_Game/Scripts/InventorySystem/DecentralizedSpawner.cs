@@ -17,6 +17,32 @@ public class DecentralizedSpawner : NetworkBehaviour
     {
         Instance = this;
         _prefabLookup = spawnablePrefabs.ToDictionary(p => p.PrefabIdHash);
+        
+        // 1) Register all manually-assigned spawnablePrefabs
+        foreach (var p in spawnablePrefabs)
+        {
+            _prefabLookup[p.PrefabIdHash] = p;
+        }
+
+        // 2) Register every prefab from NetworkManager’s NetworkConfig
+        //    (NetworkConfig.Prefabs is a NetworkPrefabs; .Prefabs is the list)
+        var netPrefabs = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
+        foreach (var netPrefab in netPrefabs)
+        {
+            // netPrefab.Prefab is your GameObject
+            var go = netPrefab.Prefab;
+            var no = go.GetComponent<NetworkObject>();
+            if (no != null)
+            {
+                _prefabLookup[no.PrefabIdHash] = no;
+            }
+        }
+
+        // 3) (Optional) Debug-dump what’s actually registered
+        foreach (var kv in _prefabLookup)
+        {
+            Debug.Log($"Registered prefab hash {kv.Key} → {kv.Value.name}");
+        }
     }
 
     /// <summary>Call from ANY client to ask the server to spawn with a custom localScale.</summary>
@@ -53,18 +79,24 @@ public class DecentralizedSpawner : NetworkBehaviour
         // 2) instantiate at world‐space pos/rot
         var netObj = Instantiate(prefab, position, rotation);
 
-        // 3) optional reparent
-        if (parentId != 0 &&
-            NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(parentId, out var parentNO))
-        {
-            netObj.TrySetParent(parentNO, worldPositionStays: true);
-        }
+   
 
         // 4) apply the requested localScale
         netObj.transform.localScale = localScale;
 
         // 5) spawn over the network
         netObj.Spawn();
+        
+        // inform clients to reparent
+        if (parentId != 0)
+            SetParentClientRpc(netObj.NetworkObjectId, parentId);
+        
+        if (parentId != 0 &&
+            NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(parentId, out var parentNO))
+        {
+            if (!netObj.TrySetParent(parentNO, worldPositionStays: true))
+                Debug.LogWarning($"Failed to parent {netObj.name} under {parentNO.name}");
+        }
 
 #if UNITY_NETCODE_1_4_OR_NEWER
         // 6) optionally hide for clients not in the target list
@@ -79,4 +111,17 @@ public class DecentralizedSpawner : NetworkBehaviour
         }
 #endif
     }
+    [ClientRpc]
+    private void SetParentClientRpc(ulong childId, ulong parentId, ClientRpcParams parms = default)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects
+                .TryGetValue(childId, out var child)
+            && NetworkManager.Singleton.SpawnManager.SpawnedObjects
+                .TryGetValue(parentId, out var parent))
+        {
+            child.transform.SetParent(parent.transform, worldPositionStays: true);
+        }
+    }
 }
+
+

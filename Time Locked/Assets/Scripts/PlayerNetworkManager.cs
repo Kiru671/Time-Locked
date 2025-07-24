@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,7 +9,9 @@ public class PlayerNetworkManager : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            MonoBehaviour[] components = GetComponentsInChildren<MonoBehaviour>();
+            MonoBehaviour[] components = GetComponentsInChildren<MonoBehaviour>()
+                .Where(component => !(component is NetworkBehaviour))
+                .ToArray();
             foreach (var component in components)
             {
                 component.enabled = false;
