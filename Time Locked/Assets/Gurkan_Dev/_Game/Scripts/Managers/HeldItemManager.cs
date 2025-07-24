@@ -2,7 +2,6 @@ using UnityEngine;
 using StarterAssets;
 using Unity.Netcode;
 using Unity.VisualScripting;
-using UnityEngine.InputSystem;
 
 public class HeldItemManager : MonoBehaviour
 {
@@ -30,8 +29,9 @@ public class HeldItemManager : MonoBehaviour
     [SerializeField] private bool autoFindController = true; // Otomatik controller bulma
 
     private InventoryItemData currentHeldItem;
+    public NetworkObject currentHeldNetworkItem;
     private int heldItemSlotIndex = -1;
-    public GameObject currentHeldWorldObject; // Elimizdeki fiziksel obje
+    private GameObject currentHeldWorldObject; // Elimizdeki fiziksel obje
     private bool isInInspectMode = false; // Inspect modunda mı
     private Vector3 objectOriginalScale; // Objenin gerçek orijinal scale'i (handScale uygulanmadan önce)
 
@@ -44,22 +44,12 @@ public class HeldItemManager : MonoBehaviour
     private StarterAssetsInputs fpsInput; // FPS Controller input'u
 
     public InventoryItemData CurrentHeldItem => currentHeldItem;
-    public NetworkObject currentHeldNetworkItem;
     public int HeldItemSlotIndex => heldItemSlotIndex;
     public bool IsHoldingItem => currentHeldItem != null;
     public bool IsInInspectMode => isInInspectMode;
-    
+
     private void Start()
     {
-        NetworkObject hand = handTransform.GetComponent<NetworkObject>();
-        hand.Spawn();
-        Camera maincam = Camera.main;
-        if (maincam != null) maincam.GetComponent<NetworkObject>().Spawn();
-        if (maincam != null) maincam.transform.parent = transform;
-        handTransform.transform.parent = maincam.transform;
-        Debug.Log("Camera is" + (maincam != null ? " assigned" : " not assigned") + " to HeldItemManager");
-
-
         // FPS Controller'ı otomatik bul
         if (autoFindController && fpsController == null)
         {
@@ -87,16 +77,6 @@ public class HeldItemManager : MonoBehaviour
         {
             UpdateHeldItemAnimation();
         }
-
-        if (currentHeldWorldObject!= null && currentHeldWorldObject.CompareTag("Readable"))
-        {
-            if(Input.GetKeyDown(KeyCode.F))
-            {
-                FirstPersonController fpc = GetComponent<FirstPersonController>();
-                NoteController noteController = currentHeldWorldObject.GetComponent<NoteController>();
-                noteController.ShowNote(fpc);
-            }
-        }
     }
 
     // Eşyayı ele alma (dünya objesini de belirt)
@@ -108,6 +88,7 @@ public class HeldItemManager : MonoBehaviour
         }
 
         currentHeldItem = item;
+        currentHeldNetworkItem = item.GetComponent<NetworkObject>();
         heldItemSlotIndex = slotIndex;
         
         // Eğer dünya objesi verilmişse elimde göster
@@ -163,43 +144,22 @@ public class HeldItemManager : MonoBehaviour
             Debug.LogWarning("Hand transform not assigned!");
             return;
         }
-        
-        // 0) save the true original scale
-        objectOriginalScale = worldObject.transform.localScale;
-        var spawnScale = objectOriginalScale * handScale;
 
-        // 1) compute the world‐space pivot
-        var spawnPos = handTransform.TransformPoint(handOffset);
-
-        // 2) grab the network object
+        currentHeldWorldObject = worldObject;
         currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
-        var prefabAsset = currentHeldItem.prefab;
-
-        // 3) ask the server to spawn it
-        DecentralizedSpawner.Instance.RequestSpawn(
-            prefabAsset,
-            spawnPos,                           // now in world‐space
-            Quaternion.Euler(handRotation),
-            spawnScale,                         // now non‐zero
-            handTransform.GetComponent<NetworkObject>()
-        );
-
-         /* // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)
+        
+        // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)
         objectOriginalScale = worldObject.transform.localScale;
-        Debug.Log($"📦 Saved original scale: {objectOriginalScale} for {worldObject.name}");
         
         // Objeyi elin pozisyonuna getir
-        worldObject.GetComponent<NetworkObject>().Spawn();
-        worldObject.transform.SetParent(handTransform);
+        RequestReparentServerRpc(currentHeldNetworkItem.NetworkObjectId, handTransform.GetComponent<NetworkObject>().NetworkObjectId);
         worldObject.transform.localPosition = handOffset;
         worldObject.transform.localRotation = Quaternion.Euler(handRotation);
         worldObject.transform.localScale = objectOriginalScale * handScale; // Orijinal scale * handScale
         
-        
-        
         // Orijinal pozisyon ve rotasyonu kaydet (animasyon için)
         originalLocalPosition = handOffset;
-        originalLocalRotation = handRotation;  */
+        originalLocalRotation = handRotation;
         
         // Objeyi aktif et (pickup sırasında deaktif edilmişti)
         worldObject.SetActive(true);
@@ -433,5 +393,13 @@ public class HeldItemManager : MonoBehaviour
         isInInspectMode = false;
         
         Debug.Log($"🔍 Recovered {currentHeldWorldObject.name} from inspection");
+    }
+    
+    [ServerRpc]
+    void RequestReparentServerRpc(ulong networkObjectId, ulong newParentId)
+    {
+        NetworkObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];
+        Transform newParent = NetworkManager.Singleton.SpawnManager.SpawnedObjects[newParentId].transform;
+        obj.transform.SetParent(newParent);
     }
 } 
