@@ -6,10 +6,12 @@ using UnityEngine;
 public class Mirror : NetworkBehaviour
 {
     private MirrorManager mirrorManager;
-
+    private Vector3 localUp;
+    
     private void Start()
     {
         mirrorManager = FindAnyObjectByType<MirrorManager>();
+        localUp = transform.TransformDirection(Vector3.up);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -26,11 +28,6 @@ public class Mirror : NetworkBehaviour
         // Create as child of mirror
         GameObject itemCopy = Instantiate(prefabToSpawn, transform);
     
-        // Set local position relative to mirror
-        itemCopy.transform.localPosition = -Vector3.up * 1.5f;
-        itemCopy.transform.localRotation = Quaternion.identity;
-        itemCopy.transform.localScale = originalItem.transform.lossyScale / transform.lossyScale.x;
-    
         // Get the world position before spawning
         Vector3 worldPos = itemCopy.transform.position;
         Vector3 worldScale = itemCopy.transform.lossyScale;
@@ -43,6 +40,11 @@ public class Mirror : NetworkBehaviour
         // Now spawn
         NetworkObject itemNetObj = itemCopy.GetComponent<NetworkObject>();
         itemNetObj.Spawn();
+        
+        // Set local position relative to mirror
+        itemCopy.transform.localPosition = (-localUp  * 1.5f)+gameObject.transform.position;
+        itemCopy.transform.localRotation = Quaternion.identity;
+        itemCopy.transform.localScale = originalItem.transform.localScale * 10f;
     
         // Enable collider
         Collider collider = itemCopy.GetComponent<Collider>();
