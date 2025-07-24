@@ -158,7 +158,6 @@ public class PlayerInventory : MonoBehaviour
     {
         if (!inventorySystem.IsSlotAvailable(slotIndex))
         {
-            Debug.Log($"Slot {slotIndex + 1} is empty or unavailable");
             return;
         }
 
@@ -174,9 +173,6 @@ public class PlayerInventory : MonoBehaviour
 
             if (heldItemManager.TakeItem(item, slotIndex, worldObject))
             {
-                Debug.Log($"📦 Picked up {item.itemName} from slot {slotIndex + 1}");
-                Debug.Log($"💡 Use at interaction zones, press {slotIndex + 1} to put back, or Right-Click to cancel");
-                
                 uiController.RefreshUI(inventorySystem, heldItemManager);
                 
                 // Pulse efekti ekle
@@ -186,7 +182,6 @@ public class PlayerInventory : MonoBehaviour
             {
                 // Eşyayı alınamazsa geri koy
                 inventorySystem.PutItemBackToSlot(item, slotIndex);
-                Debug.Log("❌ Could not take item - hands are full");
             }
         }
     }
@@ -214,12 +209,10 @@ public class PlayerInventory : MonoBehaviour
     {
         if (!heldItemManager.IsHoldingItem)
         {
-            Debug.Log("💭 No item to cancel");
             return;
         }
 
         InventoryItemData cancelledItem = heldItemManager.CurrentHeldItem;
-        Debug.Log($"🚫 Cancelled carrying {cancelledItem.itemName}");
         
         PutBackHeldItem();
         
@@ -257,7 +250,7 @@ public class PlayerInventory : MonoBehaviour
         }
         else
         {
-            Debug.Log($"❌ Inventory full! Cannot add {item.itemName}");
+
             return false;
         }
     }
@@ -266,12 +259,7 @@ public class PlayerInventory : MonoBehaviour
     {
         if (inventorySystem.AddItem(item))
         {
-            Debug.Log($"✅ Added {item.itemName} to inventory");
             uiController.RefreshUI(inventorySystem, heldItemManager);
-        }
-        else
-        {
-            Debug.Log($"❌ Inventory full! Cannot add {item.itemName}");
         }
     }
 
@@ -296,7 +284,6 @@ public class PlayerInventory : MonoBehaviour
             slotWorldObjects.Remove(slotIndex);
         }
         
-        Debug.Log($"🗑️ Removed {itemName} from inventory");
         uiController.RefreshUI(inventorySystem, heldItemManager);
     }
 
@@ -307,7 +294,6 @@ public class PlayerInventory : MonoBehaviour
     {
         if (!heldItemManager.IsHoldingItem)
         {
-            Debug.Log("❌ No item in hand to use");
             return;
         }
 
@@ -328,7 +314,6 @@ public class PlayerInventory : MonoBehaviour
         heldItemManager.UseHeldItem();
         inventorySystem.ConsumeItemFromSlot(slotIndex);
         
-        Debug.Log($"✨ Used {usedItem.itemName} at interaction zone!");
         uiController.RefreshUI(inventorySystem, heldItemManager);
     }
 
@@ -437,8 +422,7 @@ public class PlayerInventory : MonoBehaviour
             Debug.Log($"❌ {heldItemManager.CurrentHeldItem.itemName} is not inspectable!");
             return;
         }
-
-        Debug.Log($"🎯 Starting inspection of held item: {heldItemManager.CurrentHeldItem.itemName}");
+        
         itemInspector.InspectItem(heldWorldObject);
     }
 }
