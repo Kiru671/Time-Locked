@@ -51,6 +51,18 @@ public class HeldItemManager : MonoBehaviour
 
     private void Start()
     {
+        if (NetworkManager.Singleton != null)
+        {
+            Debug.Log("=== REGISTERED NETWORK PREFABS ===");
+            var prefabsList = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
+        
+            for (int i = 0; i < prefabsList.Count; i++)
+            {
+                var prefab = prefabsList[i];
+                Debug.Log($"[{i}] Prefab: {prefab.Prefab.name} - Hash: {prefab.Prefab.GetComponent<NetworkObject>().PrefabIdHash}");
+            }
+        }
+        
         // FPS Controller'ı otomatik bul
         if (autoFindController && fpsController == null)
         {
