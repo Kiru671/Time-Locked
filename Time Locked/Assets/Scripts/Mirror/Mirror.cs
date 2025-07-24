@@ -28,6 +28,8 @@ public class Mirror : NetworkBehaviour
             transform.position - transform.up * 1.5f, 
             Quaternion.identity);
         
+        itemCopy.GetComponent<NetworkObject>().Spawn();
+        
         // Preserve the scale
         itemCopy.transform.localScale = originalItem.transform.localScale;
         
