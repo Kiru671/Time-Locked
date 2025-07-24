@@ -178,7 +178,7 @@ public class HeldItemManager : NetworkBehaviour
         objectOriginalScale = worldObject.transform.localScale;
         
         // Objeyi elin pozisyonuna getir
-        RequestReparentServerRpc(currentHeldNetworkItem.NetworkObjectId, handTransform.GetComponent<NetworkObject>().NetworkObjectId);
+        RequestReparentServerRpc(currentHeldNetworkItem.NetworkObjectId, handTransform.GetComponent<NetworkObject>().NetworkObjectId,NetworkManager.Singleton.LocalClientId );
         worldObject.transform.localPosition = handOffset;
         worldObject.transform.localRotation = Quaternion.Euler(handRotation);
         worldObject.transform.localScale = objectOriginalScale * handScale; // Orijinal scale * handScale
@@ -427,6 +427,44 @@ public class HeldItemManager : NetworkBehaviour
         NetworkObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];
         Transform newParent = NetworkManager.Singleton.SpawnManager.SpawnedObjects[newParentId].transform;
         obj.transform.SetParent(newParent);
+    }
+    // SOLUTION 1: Transfer ownership before reparenting
+    [ServerRpc(RequireOwnership = false)]
+    void RequestReparentServerRpc(ulong networkObjectId, ulong newParentId, ulong requestingClientId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject obj))
+        {
+            Debug.LogError($"Could not find NetworkObject with ID {networkObjectId}");
+            return;
+        }
+    
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(newParentId, out NetworkObject parentObj))
+        {
+            Debug.LogError($"Could not find parent NetworkObject with ID {newParentId}");
+            return;
+        }
+
+        // Transfer ownership to the requesting client first
+        obj.ChangeOwnership(requestingClientId);
+    
+        // Then reparent
+        obj.transform.SetParent(parentObj.transform);
+    
+        // Force sync the reparenting to all clients
+        ForceReparentClientRpc(networkObjectId, newParentId);
+    
+        Debug.Log($"Server: Reparented {obj.name} under {parentObj.name} with ownership transfer");
+    }
+
+    [ClientRpc]
+    void ForceReparentClientRpc(ulong childId, ulong parentId)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(childId, out NetworkObject childObj) &&
+            NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(parentId, out NetworkObject parentObj))
+        {
+            childObj.transform.SetParent(parentObj.transform);
+            Debug.Log($"Client: Force reparented {childObj.name} under {parentObj.name}");
+        }
     }
     
     [ServerRpc(RequireOwnership = false)]
