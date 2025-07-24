@@ -421,7 +421,7 @@ public class HeldItemManager : NetworkBehaviour
         Debug.Log($"🔍 Recovered {currentHeldWorldObject.name} from inspection");
     }
     
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     void RequestReparentServerRpc(ulong networkObjectId, ulong newParentId)
     {
         NetworkObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];

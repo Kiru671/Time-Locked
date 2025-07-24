@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="793fc370-5077-4d11-bdfc-d3ca4691179d" name="Changes" comment="" />
+    <list default="true" id="793fc370-5077-4d11-bdfc-d3ca4691179d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Time Locked/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Time Locked/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/Managers/HeldItemManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/Managers/HeldItemManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Prefabs/Sphere (8).prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Prefabs/Sphere (8).prefab" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
