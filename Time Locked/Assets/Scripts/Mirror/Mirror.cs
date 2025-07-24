@@ -35,41 +35,6 @@ public class Mirror : NetworkBehaviour
         Collider collider = itemCopy.GetComponent<Collider>();
         if (collider != null)
             collider.enabled = true;
-        
-        // Sync the creation to all clients
-        NotifyClientsOfNewItemClientRpc(
-            itemId, 
-            itemCopy.transform.position, 
-            itemCopy.transform.rotation,
-            itemCopy.transform.localScale*10
-        );
-    }
-    
-    [ClientRpc]
-    private void NotifyClientsOfNewItemClientRpc(ulong originalItemId, Vector3 position, Quaternion rotation, Vector3 scale)
-    {
-        
-        // Skip if we're the server (already created)
-        if (IsServer) 
-        {
-            return;
-        }
-        
-        NetworkObject originalItem = null;
-        bool found = NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(originalItemId, out originalItem);
-        
-        if (!found || originalItem == null) 
-        {
-            return;
-        }
-        
-        // Create copy on client
-        GameObject itemCopy = Instantiate(originalItem.gameObject, position, rotation);
-        itemCopy.transform.localScale = scale;
-        
-        Collider collider = itemCopy.GetComponent<Collider>();
-        if (collider != null)
-            collider.enabled = true;
     }
     
     public void SendItem(ulong itemId)

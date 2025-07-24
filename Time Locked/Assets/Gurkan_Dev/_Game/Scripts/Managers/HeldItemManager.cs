@@ -34,6 +34,7 @@ public class HeldItemManager : MonoBehaviour
     private GameObject currentHeldWorldObject; // Elimizdeki fiziksel obje
     private bool isInInspectMode = false; // Inspect modunda mı
     private Vector3 objectOriginalScale; // Objenin gerçek orijinal scale'i (handScale uygulanmadan önce)
+    [SerializeField] private Transform camFollow;
 
     // Animation variables
     private Vector3 originalLocalPosition;
@@ -59,7 +60,11 @@ public class HeldItemManager : MonoBehaviour
                 Debug.LogWarning("FirstPersonController not found! Hand animations may not work properly.");
             }
         }
-
+        NetworkObject camTR_ = RequestSpawnServerRpc(camFollow.GetComponent<NetworkObject>());
+        NetworkObject handTransformNetworkObject = RequestSpawnServerRpc(handTransform.GetComponent<NetworkObject>());
+        RequestReparentServerRpc(RequestSpawnServerRpc(handTransformNetworkObject).NetworkObjectId,camTR_.NetworkObjectId);
+        RequestReparentServerRpc(camTR_.NetworkObjectId, GetComponent<NetworkObject>().NetworkObjectId);
+        
         // Input componenti al
         if (fpsController != null)
         {
@@ -88,17 +93,23 @@ public class HeldItemManager : MonoBehaviour
         }
 
         currentHeldItem = item;
-        currentHeldNetworkItem = item.GetComponent<NetworkObject>();
-        heldItemSlotIndex = slotIndex;
-        
-        // Eğer dünya objesi verilmişse elimde göster
         if (worldObject != null)
         {
-            ShowItemInHand(worldObject);
+            currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
+            if (currentHeldNetworkItem == null)
+            {
+                Debug.LogError("Current held item does not have a NetworkObject component!");
+                return false;
+            }
+
+            heldItemSlotIndex = slotIndex;
+
+            // Eğer dünya objesi verilmişse elimde göster
+            if (worldObject != null)
+            {
+                ShowItemInHand(worldObject);
+            }
         }
-        
-        Debug.Log($"Now holding: {currentHeldItem.itemName} from slot {slotIndex + 1}");
-        
         return true;
     }
 
@@ -401,5 +412,11 @@ public class HeldItemManager : MonoBehaviour
         NetworkObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];
         Transform newParent = NetworkManager.Singleton.SpawnManager.SpawnedObjects[newParentId].transform;
         obj.transform.SetParent(newParent);
+    }
+    [ServerRpc]
+    private NetworkObject RequestSpawnServerRpc(NetworkObject obj)
+    {
+        obj.Spawn();
+        return obj;
     }
 } 

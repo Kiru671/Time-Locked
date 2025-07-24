@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="793fc370-5077-4d11-bdfc-d3ca4691179d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Time Locked/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Time Locked/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/InventorySystem/DecentralizedSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/InventorySystem/DecentralizedSpawner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/Managers/HeldItemManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/Managers/HeldItemManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/Managers/HeldItemManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Gurkan_Dev/_Game/Scripts/Managers/HeldItemManager.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Mirror/Mirror.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Mirror/Mirror.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Prefabs/Player.prefab" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

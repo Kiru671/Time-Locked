@@ -571,8 +571,8 @@ MonoBehaviour:
   movementTiltAmount: 8
   fpsController: {fileID: 6454646988720551490}
   autoFindController: 1
-  currentHeldWorldObject: {fileID: 0}
   currentHeldNetworkItem: {fileID: 0}
+  camFollow: {fileID: 6125118513763392726}
 --- !u!114 &4278644876511846726
 MonoBehaviour:
   m_ObjectHideFlags: 0
