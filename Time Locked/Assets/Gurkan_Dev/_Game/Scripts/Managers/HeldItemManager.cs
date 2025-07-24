@@ -72,9 +72,12 @@ public class HeldItemManager : NetworkBehaviour
                 Debug.LogWarning("FirstPersonController not found! Hand animations may not work properly.");
             }
         }
-        NetworkObject camTR_ = RequestSpawnServerRpc(camFollow.GetComponent<NetworkObject>());
-        NetworkObject handTransformNetworkObject = RequestSpawnServerRpc(handTransform.GetComponent<NetworkObject>());
-        RequestReparentServerRpc(RequestSpawnServerRpc(handTransformNetworkObject).NetworkObjectId,camTR_.NetworkObjectId);
+        RequestSpawnCameraServerRpc();
+        RequestSpawnServerRpc(camFollow.GetComponent<NetworkObject>().NetworkObjectId);
+        RequestSpawnServerRpc(handTransform.GetComponent<NetworkObject>().NetworkObjectId);
+        NetworkObject camTR_ = camFollow.GetComponent<NetworkObject>();
+        NetworkObject handTransformNetworkObject = handTransform.GetComponent<NetworkObject>();
+        RequestReparentServerRpc(handTransformNetworkObject.NetworkObjectId, camTR_.NetworkObjectId);
         RequestReparentServerRpc(camTR_.NetworkObjectId, GetComponent<NetworkObject>().NetworkObjectId);
         
         // Input componenti al
@@ -426,10 +429,18 @@ public class HeldItemManager : NetworkBehaviour
         obj.transform.SetParent(newParent);
     }
     
-    [ServerRpc]
-    private NetworkObject RequestSpawnServerRpc(NetworkObject obj)
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestSpawnServerRpc(ulong objId)
     {
-        obj.Spawn();
-        return obj;
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(objId, out var obj))
+        {
+            obj.Spawn();
+        }
+    }
+    [ServerRpc]
+    private void RequestSpawnCameraServerRpc()
+    {
+        camFollow.GetComponent<NetworkObject>().Spawn();
+        handTransform.gameObject.GetComponent<NetworkObject>().Spawn();
     }
 } 
