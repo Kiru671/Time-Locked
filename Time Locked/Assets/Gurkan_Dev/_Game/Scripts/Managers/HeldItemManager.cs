@@ -3,7 +3,7 @@ using StarterAssets;
 using Unity.Netcode;
 using Unity.VisualScripting;
 
-public class HeldItemManager : MonoBehaviour
+public class HeldItemManager : NetworkBehaviour
 {
     [Header("Hand Settings")]
     [SerializeField] private Transform handTransform; // Elimdeki objenin görüneceği yer
@@ -51,17 +51,17 @@ public class HeldItemManager : MonoBehaviour
 
     private void Start()
     {
-        if (NetworkManager.Singleton != null)
-        {
-            Debug.Log("=== REGISTERED NETWORK PREFABS ===");
-            var prefabsList = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
+         if (NetworkManager.Singleton != null)
+    {
+        Debug.Log("=== REGISTERED NETWORK PREFABS ===");
+        var prefabsList = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
         
-            for (int i = 0; i < prefabsList.Count; i++)
-            {
-                var prefab = prefabsList[i];
-                Debug.Log($"[{i}] Prefab: {prefab.Prefab.name} - Hash: {prefab.Prefab.GetComponent<NetworkObject>().PrefabIdHash}");
-            }
+        for (int i = 0; i < prefabsList.Count; i++)
+        {
+            var prefab = prefabsList[i];
+            Debug.Log($"[{i}] Prefab: {prefab.Prefab.name} - Hash: {prefab.Prefab.GetComponent<NetworkObject>().PrefabIdHash}");
         }
+    }
         
         // FPS Controller'ı otomatik bul
         if (autoFindController && fpsController == null)
@@ -425,6 +425,7 @@ public class HeldItemManager : MonoBehaviour
         Transform newParent = NetworkManager.Singleton.SpawnManager.SpawnedObjects[newParentId].transform;
         obj.transform.SetParent(newParent);
     }
+    
     [ServerRpc]
     private NetworkObject RequestSpawnServerRpc(NetworkObject obj)
     {

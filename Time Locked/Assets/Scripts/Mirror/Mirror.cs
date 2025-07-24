@@ -17,40 +17,37 @@ public class Mirror : NetworkBehaviour
     {
         NetworkObject originalItem = null;
         bool found = NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemId, out originalItem);
-        
-        if (!found || originalItem == null)
-        {
-            return;
-        }
+    
+        if (!found || originalItem == null) return;
 
-        // Debug logging
-        Debug.Log($"Looking for prefab for: {originalItem.name} with hash: {originalItem.PrefabIdHash}");
-
-        // Find the matching prefab from NetworkManager's list
         GameObject prefabToSpawn = FindMatchingPrefab(originalItem);
-        if (prefabToSpawn == null)
-        {
-            Debug.LogError($"Could not find prefab for {originalItem.name} in NetworkManager's prefab list!");
-            return;
-        }
+        if (prefabToSpawn == null) return;
 
-        // Create the copy from the registered prefab
-        GameObject itemCopy = Instantiate(prefabToSpawn, 
-            transform.position - transform.up * 1.5f, 
-            Quaternion.identity);
-        
-        // Preserve the scale from the original
-        itemCopy.transform.localScale = originalItem.transform.localScale;
-        
+        // Create as child of mirror
+        GameObject itemCopy = Instantiate(prefabToSpawn, transform);
+    
+        // Set local position relative to mirror
+        itemCopy.transform.localPosition = -Vector3.up * 1.5f;
+        itemCopy.transform.localRotation = Quaternion.identity;
+        itemCopy.transform.localScale = originalItem.transform.lossyScale / transform.lossyScale.x;
+    
+        // Get the world position before spawning
+        Vector3 worldPos = itemCopy.transform.position;
+        Vector3 worldScale = itemCopy.transform.lossyScale;
+    
+        // Unparent before spawning
+        itemCopy.transform.SetParent(null);
+        itemCopy.transform.position = worldPos;
+        itemCopy.transform.localScale = worldScale;
+    
+        // Now spawn
+        NetworkObject itemNetObj = itemCopy.GetComponent<NetworkObject>();
+        itemNetObj.Spawn();
+    
         // Enable collider
         Collider collider = itemCopy.GetComponent<Collider>();
         if (collider != null)
             collider.enabled = true;
-            
-        // Now spawn - this will work because we used a registered prefab
-        itemCopy.GetComponent<NetworkObject>().Spawn();
-        
-        itemCopy.transform.position = transform.position - transform.up * 1.5f;
     }
     
     private GameObject FindMatchingPrefab(NetworkObject spawnedInstance)
