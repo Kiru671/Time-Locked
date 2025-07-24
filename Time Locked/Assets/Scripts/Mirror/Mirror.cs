@@ -49,6 +49,8 @@ public class Mirror : NetworkBehaviour
             
         // Now spawn - this will work because we used a registered prefab
         itemCopy.GetComponent<NetworkObject>().Spawn();
+        
+        itemCopy.transform.position = transform.position - transform.up * 1.5f;
     }
     
     private GameObject FindMatchingPrefab(NetworkObject spawnedInstance)
