@@ -1,8 +1,15 @@
 fileFormatVersion: 2
-guid: c093d654c97244c46bf7303eea4e5f69
+guid: 15fa0de49e439d34eabed9d8035e8df2
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 0
+  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297716
+  packageName: 3D Cartoon Cute Safe Pack
+  packageVersion: 1.0
+  assetPath: Assets/PinkTea/3D Cartoon Safe Pack/Materials/Large Safe/L_Safe_Lock.mat
+  uploadId: 703600

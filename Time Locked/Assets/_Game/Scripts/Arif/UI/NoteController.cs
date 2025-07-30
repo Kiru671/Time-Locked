@@ -18,7 +18,6 @@ public class NoteController : MonoBehaviour
 
     [Space(10)] [SerializeField] [TextArea]
     private string noteText;
-
     
     
     [Space(10)] [SerializeField]
@@ -32,7 +31,7 @@ public class NoteController : MonoBehaviour
     [Space(10)] [SerializeField] private UnityEvent openEvent; // For sound effects
     private bool isOpen;
     
-
+   
     
     void Update()
     {
@@ -44,11 +43,9 @@ public class NoteController : MonoBehaviour
     public void ShowNote(FirstPersonController player)
     {
         noteTextAreaUI.text = noteText;
-
         noteTextAreaUI.textWrappingMode = (wrap) ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
         noteTextAreaUI.color = color;
         noteTextAreaUI.enableAutoSizing = autoSize;
-
         noteCanvas.SetActive(true);
         openEvent.Invoke();
         currentPlayer = player;

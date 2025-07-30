@@ -1,13 +1,9 @@
 fileFormatVersion: 2
-<<<<<<<< Updated upstream:Time Locked/Assets/_Game/Art/Sprites/Lobby/Input Box.PNG.meta
-guid: 018c51063924b8c40bdcc757101b494f
-========
 guid: 66d42f45bcd91e24b8b2b198ce97f9bf
->>>>>>>> Stashed changes:Time Locked/Assets/AdditionalFiles/Keypad/Textures/Button_albedo.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 13
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -54,13 +50,8 @@ TextureImporter:
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
-<<<<<<<< Updated upstream:Time Locked/Assets/_Game/Art/Sprites/Lobby/Input Box.PNG.meta
-  alphaUsage: 2
-  alphaIsTransparency: 1
-========
   alphaUsage: 1
   alphaIsTransparency: 0
->>>>>>>> Stashed changes:Time Locked/Assets/AdditionalFiles/Keypad/Textures/Button_albedo.png.meta
   spriteTessellationDetail: -1
   textureType: 0
   textureShape: 1
@@ -74,7 +65,7 @@ TextureImporter:
   applyGammaDecoding: 0
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -84,16 +75,9 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-<<<<<<<< Updated upstream:Time Locked/Assets/_Game/Art/Sprites/Lobby/Input Box.PNG.meta
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-========
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
->>>>>>>> Stashed changes:Time Locked/Assets/AdditionalFiles/Keypad/Textures/Button_albedo.png.meta
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -117,8 +101,6 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-<<<<<<<< Updated upstream:Time Locked/Assets/_Game/Art/Sprites/Lobby/Input Box.PNG.meta
-========
   - serializedVersion: 3
     buildTarget: Android
     maxTextureSize: 2048
@@ -143,12 +125,10 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
->>>>>>>> Stashed changes:Time Locked/Assets/AdditionalFiles/Keypad/Textures/Button_albedo.png.meta
   spriteSheet:
     serializedVersion: 2
     sprites: []
     outline: []
-    customData: 
     physicsShape: []
     bones: []
     spriteID: 
@@ -158,8 +138,6 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    spriteCustomMetadata:
-      entries: []
     nameFileIdTable: {}
   spritePackingTag: 
   pSDRemoveMatte: 0
@@ -167,8 +145,6 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-<<<<<<<< Updated upstream:Time Locked/Assets/_Game/Art/Sprites/Lobby/Input Box.PNG.meta
-========
 AssetOrigin:
   serializedVersion: 1
   productId: 262151
@@ -176,4 +152,3 @@ AssetOrigin:
   packageVersion: 1.0.1
   assetPath: Assets/Keypad/Textures/Button_albedo.png
   uploadId: 657263
->>>>>>>> Stashed changes:Time Locked/Assets/AdditionalFiles/Keypad/Textures/Button_albedo.png.meta

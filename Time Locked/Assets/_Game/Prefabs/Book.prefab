@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2288538626126151709}
   m_Layer: 6
   m_Name: Book
-  m_TagString: Readable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 962106587dbb9294aa5b0ff2bc9ae0aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  closeKey: 113
+  closeKey: 27
   noteCanvas: {fileID: 0}
   noteTextAreaUI: {fileID: 0}
   noteText: "A\t\xB7\u2013\t\tN\t\u2013\xB7\r\n\t\u2013\xB7\xB7\xB7\t\tO\t\u2013
@@ -171,5 +171,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 2ea44e3e7e5f39349ac408f26fe57a00, type: 2}
   interactionText: Press E to take
-  removeColliderOnPickup: 1
-  removeRigidbodyOnPickup: 0

@@ -14,4 +14,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\u0130tem_1"
   icon: {fileID: 21300000, guid: ff7bfa7addf40784d86f62b8e4a034a6, type: 3}
-  prefab: {fileID: 8048053840855979725, guid: 288204211ab68e7418d79f988245c2cc, type: 3}

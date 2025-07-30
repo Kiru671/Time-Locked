@@ -1,7 +1,6 @@
-using Unity.Netcode;
 using UnityEngine;
 
-public class RaycastInteraction : NetworkBehaviour
+public class RaycastInteraction : MonoBehaviour
 {
     public float interactionRange = 4f;
     public LayerMask interactionLayer;
@@ -11,13 +10,6 @@ public class RaycastInteraction : NetworkBehaviour
     private Outline lastOutline;
 
 
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner)
-        {
-            this.enabled = false;
-        }
-    }
     private void Start()
     {
         cam = Camera.main;
@@ -25,12 +17,14 @@ public class RaycastInteraction : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsLocalPlayer) return;
+        // If camera is not yet found, try to find it..
         if (cam == null)
         {
             cam = Camera.main;
+            // If we still can't find it, return and try again next frame. This prevents the null reference.
             if (cam == null) return;
         }
+        
         
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactionLayer))
@@ -41,7 +35,7 @@ public class RaycastInteraction : NetworkBehaviour
             if (interactable != null)
             {
                 currentInteractable = interactable;
-                //UIManager.Instance.ShowHint(interactable.GetInteractionText());
+                UIManager.Instance.ShowHint(interactable.GetInteractionText());
 
                 // Outline aç
                 if (outline != null && outline != lastOutline)
@@ -58,17 +52,9 @@ public class RaycastInteraction : NetworkBehaviour
                     UIManager.Instance.HideHint();
                 }
             }
-        }
-        else if (Physics.Raycast(ray, out RaycastHit mirrorHit, interactionRange, LayerMask.GetMask("Mirror")))
-        {
-            UIManager.Instance.ShowHint("Press E to ");
-            
-            var interactable = mirrorHit.collider.GetComponent<Mirror>();
-            if (Input.GetKeyDown(KeyCode.E))
+            else
             {
-                var playerInventory = GetComponent<PlayerInventory>();
-                interactable.SendItem(playerInventory.heldItemManager.currentHeldNetworkItem.NetworkObjectId);
-                UIManager.Instance.HideHint();
+                ClearHint();
             }
         }
         else
