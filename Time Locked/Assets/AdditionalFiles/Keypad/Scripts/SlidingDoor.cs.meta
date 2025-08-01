@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7a1078d7f16f5e145a3137f0c509fb51
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 262151
+  packageName: Keypad FREE
+  packageVersion: 1.0.1
+  assetPath: Assets/Keypad/Scripts/SlidingDoor.cs
+  uploadId: 657263

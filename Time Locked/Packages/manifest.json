@@ -15,6 +15,7 @@
     "com.unity.netcode.gameobjects": "2.4.3",
     "com.unity.nuget.mono-cecil": "1.11.4",
     "com.unity.package-validation-suite": "0.22.0-preview",
+    "com.unity.postprocessing": "3.4.0",
     "com.unity.probuilder": "6.0.5",
     "com.unity.render-pipelines.core": "17.0.4",
     "com.unity.render-pipelines.universal": "17.0.4",

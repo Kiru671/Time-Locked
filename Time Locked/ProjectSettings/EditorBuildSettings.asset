@@ -8,12 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Game/Scenes/MenuScene.unity
     guid: ab10a6d7efa446e4b88827c236d67b6b
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Game/Scenes/GameScene.unity
     guid: c668c09ef7bd7aa4c85768c49244aeab
-  - enabled: 1
-    path: Assets/Gurkan_Dev/_Game/Scenes/GameScene.unity
-    guid: 3409960c617e00b4392684e829431bec
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
