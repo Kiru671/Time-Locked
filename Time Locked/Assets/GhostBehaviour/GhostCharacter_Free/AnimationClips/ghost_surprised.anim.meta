@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 814f3c6ec45d94785b046de04084086d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267003
+  packageName: Ghost character Free
+  packageVersion: 1.0
+  assetPath: Assets/GhostCharacter_Free/AnimationClips/ghost_surprised.anim
+  uploadId: 617687
