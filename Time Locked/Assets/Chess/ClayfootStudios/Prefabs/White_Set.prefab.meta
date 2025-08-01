@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: bce58ce8d75683161ba1841e63810b7c
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 216547
+  packageName: Low-Poly Chess Set, Board, and Timer
+  packageVersion: 1.0
+  assetPath: Assets/ClayfootStudios/Prefabs/White_Set.prefab
+  uploadId: 489111
