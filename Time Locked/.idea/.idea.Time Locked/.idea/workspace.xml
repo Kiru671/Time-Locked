@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="793fc370-5077-4d11-bdfc-d3ca4691179d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Time Locked/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Time Locked/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Game/Scripts/Gurkan/ItemInteraction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Game/Scripts/Gurkan/ItemInteraction.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +113,7 @@
       <workItem from="1753270658113" duration="8856000" />
       <workItem from="1754136692875" duration="11751000" />
       <workItem from="1754215513616" duration="7498000" />
-      <workItem from="1754225660402" duration="18714000" />
+      <workItem from="1754225660402" duration="20266000" />
     </task>
     <servers />
   </component>

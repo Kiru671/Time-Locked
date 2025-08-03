@@ -91,14 +91,27 @@ public class ItemInteraction : NetworkBehaviour, IInteractable
         SendPickupRequest();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void HandlePickupRequestServerRpc(ServerRpcParams rpcParams = default)
+    {
+        Debug.Log("[SERVER] GOT RPC FROM CLIENT!");
+    
+        // Get the sender's client ID from RPC parameters
+        ulong senderClientId = rpcParams.Receive.SenderClientId;
+    
+        Debug.Log($"[SERVER] Processing pickup for sender: {senderClientId}");
+    
+        // Process pickup for the actual sender
+        ProcessPickupOnServer(senderClientId);
+    }
+
+// Update the client-side call to not send clientId
     private void SendPickupRequest()
     {
         Debug.Log($"[CLIENT] ===== SENDING PICKUP REQUEST =====");
         Debug.Log($"[CLIENT] IsSpawned: {IsSpawned}");
         Debug.Log($"[CLIENT] NetworkManager connected: {NetworkManager.Singleton.IsConnectedClient}");
         Debug.Log($"[CLIENT] LocalClientId: {NetworkManager.Singleton.LocalClientId}");
-        Debug.Log($"[CLIENT] IsServer: {IsServer}");
-        Debug.Log($"[CLIENT] IsClient: {IsClient}");
     
         if (!IsSpawned)
         {
@@ -108,24 +121,9 @@ public class ItemInteraction : NetworkBehaviour, IInteractable
 
         Debug.Log($"[CLIENT] Sending pickup request to server");
     
-        // Create request data
-        var requestData = new PickupRequestData { clientId = NetworkManager.Singleton.LocalClientId };
-    
-        // Call the RPC
-        HandlePickupRequestServerRpc(requestData);
+        // Call the RPC without parameters - server will get sender ID automatically
+        HandlePickupRequestServerRpc();
         Debug.Log($"[CLIENT] RPC call completed");
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void HandlePickupRequestServerRpc(PickupRequestData request)  // <-- Remove RpcParams
-    {
-        Debug.Log("[SERVER] GOT RPC FROM CLIENT!");
-    
-        // Get sender ID differently
-        ulong actualClientId = NetworkManager.Singleton.LocalClientId; // This won't work for validation
-    
-        // For now, just trust the request
-        ProcessPickupOnServer(request.clientId);  // Use the clientId from request
     }
 
     private void ProcessPickupOnServer(ulong clientId)
