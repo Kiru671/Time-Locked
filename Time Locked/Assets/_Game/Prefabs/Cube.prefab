@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 2441159701105960296}
   - component: {fileID: 380380028708528470}
   - component: {fileID: 5654568268012872547}
+  - component: {fileID: 2807405934565948526}
   - component: {fileID: 6012222829263976037}
   - component: {fileID: 2757878194298854731}
   - component: {fileID: 3899443651300046127}
   - component: {fileID: 3473613089736753979}
-  - component: {fileID: 2807405934565948526}
   m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
@@ -113,6 +113,31 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2807405934565948526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4940635733085015578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 4177331976
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &6012222829263976037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a020570b138684c9d3871565588bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   itemData: {fileID: 11400000, guid: 1b58d9c7597abcd47b4ae3fa2bb5b835, type: 2}
   interactionText: Press E to take
   removeColliderOnPickup: 1
@@ -174,28 +200,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874e200bd9d12c446bfaab4991f44902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2807405934565948526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4940635733085015578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3220241001
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0

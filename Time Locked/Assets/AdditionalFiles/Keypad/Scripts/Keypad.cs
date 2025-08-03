@@ -40,7 +40,6 @@ namespace NavKeypad
         [SerializeField] private AudioSource audioSource;
 
         [Header("Safebox")]
-        [SerializeField] private Animator safebox1;
         [SerializeField] private Animator safebox2;
 
 
@@ -135,7 +134,6 @@ namespace NavKeypad
 
         public void OpenSafe()
         {
-            safebox1.SetTrigger(Safe);
             safebox2.SetTrigger(Safe);
         }
     }

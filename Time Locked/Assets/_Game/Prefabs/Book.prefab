@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 371491686217077032}
   - component: {fileID: 1590951432668588206}
   - component: {fileID: -2772276053497189325}
+  - component: {fileID: 3995787855569091183}
   - component: {fileID: 2288538626126151709}
   m_Layer: 6
   m_Name: Book
@@ -157,6 +158,31 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &3995787855569091183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8306778932858294675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2413189161
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &2288538626126151709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,6 +195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a020570b138684c9d3871565588bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   itemData: {fileID: 11400000, guid: 2ea44e3e7e5f39349ac408f26fe57a00, type: 2}
   interactionText: Press E to take
   removeColliderOnPickup: 1

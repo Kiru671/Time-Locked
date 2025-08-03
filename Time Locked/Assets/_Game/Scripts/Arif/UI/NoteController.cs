@@ -56,7 +56,7 @@ public class NoteController : MonoBehaviour
         isOpen = true;
     }
 
-    void DisableNote()
+    public void DisableNote()
     {
         noteCanvas.SetActive(false);
         DisablePlayer(false);

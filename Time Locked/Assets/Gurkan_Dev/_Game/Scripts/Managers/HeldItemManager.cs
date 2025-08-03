@@ -1,4 +1,5 @@
 // ===== FIXED HeldItemManager.cs =====
+
 using System.Collections;
 using UnityEngine;
 using StarterAssets;
@@ -8,14 +9,16 @@ using Unity.VisualScripting;
 
 public class HeldItemManager : NetworkBehaviour
 {
-    [Header("Hand Settings")]
-    [SerializeField] private Transform handTransform;
+    [Header("Hand Settings")] [SerializeField]
+    private Transform handTransform;
+
     [SerializeField] private Vector3 handOffset = Vector3.zero;
     [SerializeField] private Vector3 handRotation = Vector3.zero;
     [SerializeField] private float handScale = 1f;
 
-    [Header("Animation Settings")]
-    [SerializeField] private bool enableBobbing = true;
+    [Header("Animation Settings")] [SerializeField]
+    private bool enableBobbing = true;
+
     [SerializeField] private float bobbingSpeed = 2f;
     [SerializeField] private float bobbingAmount = 0.05f;
     [SerializeField] private bool enableSway = true;
@@ -27,8 +30,9 @@ public class HeldItemManager : NetworkBehaviour
     [SerializeField] private float movementSwayAmount = 0.04f;
     [SerializeField] private float movementTiltAmount = 8f;
 
-    [Header("Controller Integration")]
-    [SerializeField] private FirstPersonController fpsController;
+    [Header("Controller Integration")] [SerializeField]
+    private FirstPersonController fpsController;
+
     [SerializeField] private bool autoFindController = true;
 
     private InventoryItemData currentHeldItem;
@@ -52,6 +56,8 @@ public class HeldItemManager : NetworkBehaviour
     public bool IsHoldingItem => currentHeldItem != null;
     public bool IsInInspectMode => isInInspectMode;
 
+    private NoteController _noteController;
+
     private void Start()
     {
         if (NetworkManager.Singleton != null)
@@ -62,7 +68,8 @@ public class HeldItemManager : NetworkBehaviour
             for (int i = 0; i < prefabsList.Count; i++)
             {
                 var prefab = prefabsList[i];
-                Debug.Log($"[{i}] Prefab: {prefab.Prefab.name} - Hash: {prefab.Prefab.GetComponent<NetworkObject>().PrefabIdHash}");
+                Debug.Log(
+                    $"[{i}] Prefab: {prefab.Prefab.name} - Hash: {prefab.Prefab.GetComponent<NetworkObject>().PrefabIdHash}");
             }
 
             if (autoFindController && fpsController == null)
@@ -84,7 +91,7 @@ public class HeldItemManager : NetworkBehaviour
             }
         }
     }
-    
+
     // Add this method to your HeldItemManager for debugging
     [ContextMenu("Debug Hand Transform")]
     private void DebugHandTransform()
@@ -104,18 +111,28 @@ public class HeldItemManager : NetworkBehaviour
         {
             // Check if the object has a FollowTransform component
             FollowTransform followTransform = currentHeldWorldObject.GetComponent<FollowTransform>();
-        
+
             // Only run our animation system if there's no FollowTransform
             if (followTransform == null)
             {
                 UpdateHeldItemAnimation();
             }
         }
+
+        if (currentHeldWorldObject != null && currentHeldWorldObject.CompareTag("Readable"))
+        {
+            if (Input.GetKey(KeyCode.F))
+            {
+                _noteController = currentHeldWorldObject.GetComponent<NoteController>();
+                if (_noteController != null)
+                    _noteController.ShowNote(fpsController);
+            }
+        }
     }
 
     // FIXED: Take item method
     // FIXED: TakeItem method - get the correct client ID
-   // In HeldItemManager.cs
+    // In HeldItemManager.cs
     public bool TakeItem(InventoryItemData item, int slotIndex, GameObject worldObject = null)
     {
         if (IsHoldingItem) return false;
@@ -134,24 +151,27 @@ public class HeldItemManager : NetworkBehaviour
 
             // Ensure the object is active before proceeding
             worldObject.SetActive(true);
-        
+
             // Request server to handle the ownership transfer
-            RequestItemOwnershipServerRpc(currentHeldNetworkItem.NetworkObjectId, NetworkManager.Singleton.LocalClientId);
+            RequestItemOwnershipServerRpc(currentHeldNetworkItem.NetworkObjectId,
+                NetworkManager.Singleton.LocalClientId);
 
             ShowItemInHand(worldObject, NetworkManager.Singleton.LocalClientId);
         }
+
         return true;
     }
 
     [ServerRpc]
     private void RequestItemOwnershipServerRpc(ulong itemNetworkId, ulong requestingClientId)
     {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId,
+                out NetworkObject itemNetObj))
         {
             Debug.LogError($"Could not find NetworkObject with ID {itemNetworkId}");
             return;
         }
-    
+
         // Change ownership to the client who requested it
         itemNetObj.ChangeOwnership(requestingClientId);
     }
@@ -168,8 +188,6 @@ public class HeldItemManager : NetworkBehaviour
         currentHeldWorldObject = worldObject;
         currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
 
-        
-        
 
         if (currentHeldNetworkItem == null)
         {
@@ -183,12 +201,14 @@ public class HeldItemManager : NetworkBehaviour
         // FIXED: Now we have requestingClientId
         if (IsServer)
         {
-            Debug.Log( $"🔍 SetupHeldItemServerRpc called: ItemId={currentHeldNetworkItem.NetworkObjectId}, OwnerClientId={requestingClientId}");
+            Debug.Log(
+                $"🔍 SetupHeldItemServerRpc called: ItemId={currentHeldNetworkItem.NetworkObjectId}, OwnerClientId={requestingClientId}");
             SetupHeldItemServerRpc(currentHeldNetworkItem.NetworkObjectId, requestingClientId);
         }
         else
         {
-            Debug.Log($"🔍 SetupHeldItemServerRpc called (Client): ItemId={currentHeldNetworkItem.NetworkObjectId}, OwnerClientId={requestingClientId}");
+            Debug.Log(
+                $"🔍 SetupHeldItemServerRpc called (Client): ItemId={currentHeldNetworkItem.NetworkObjectId}, OwnerClientId={requestingClientId}");
             SetupHeldItemServerRpc(currentHeldNetworkItem.NetworkObjectId, requestingClientId);
         }
     }
@@ -196,7 +216,8 @@ public class HeldItemManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetupHeldItemServerRpc(ulong itemNetworkId, ulong newOwnerClientId)
     {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId,
+                out NetworkObject itemNetObj))
         {
             Debug.LogError($"Could not find NetworkObject with ID {itemNetworkId}");
             return;
@@ -204,17 +225,19 @@ public class HeldItemManager : NetworkBehaviour
 
         // Change ownership to the client who picked it up
         itemNetObj.ChangeOwnership(newOwnerClientId);
-        
+
         // Setup the item for being held
         SetupHeldItemClientRpc(itemNetworkId, newOwnerClientId);
     }
 
-   [ClientRpc]
+    [ClientRpc]
     private void SetupHeldItemClientRpc(ulong itemNetworkId, ulong ownerClientId)
     {
-        Debug.Log($"🔍 SetupHeldItemClientRpc called: ItemId={itemNetworkId}, OwnerClientId={ownerClientId}, LocalClientId={NetworkManager.Singleton.LocalClientId}");
-        
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        Debug.Log(
+            $"🔍 SetupHeldItemClientRpc called: ItemId={itemNetworkId}, OwnerClientId={ownerClientId}, LocalClientId={NetworkManager.Singleton.LocalClientId}");
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId,
+                out NetworkObject itemNetObj))
         {
             Debug.LogError($"❌ Could not find NetworkObject with ID {itemNetworkId}");
             return;
@@ -222,22 +245,20 @@ public class HeldItemManager : NetworkBehaviour
 
         GameObject worldObject = itemNetObj.gameObject;
         Debug.Log($"🎯 Found NetworkObject: {worldObject.name}");
-        
+
         // Activate the object FIRST
         worldObject.SetActive(true);
         Debug.Log($"✅ Activated object: {worldObject.name}");
-        
+
         // Only the owner should set up the FollowTransform
         if (itemNetObj.IsOwner)
         {
-            
-            StartCoroutine(WaitForOwnership(itemNetObj, () =>
-            {
-                SetupFollowTransform(itemNetObj.gameObject, ownerClientId);
-            }));
-            
-            Debug.Log($"🎮 This client ({NetworkManager.Singleton.LocalClientId}) is the owner, setting up FollowTransform...");
-            
+            StartCoroutine(WaitForOwnership(itemNetObj,
+                () => { SetupFollowTransform(itemNetObj.gameObject, ownerClientId); }));
+
+            Debug.Log(
+                $"🎮 This client ({NetworkManager.Singleton.LocalClientId}) is the owner, setting up FollowTransform...");
+
             // Remove existing FollowTransform if any
             FollowTransform existingFollow = worldObject.GetComponent<FollowTransform>();
             if (existingFollow != null)
@@ -258,28 +279,29 @@ public class HeldItemManager : NetworkBehaviour
             // Add new FollowTransform with hand settings
             FollowTransform followTransform = worldObject.AddComponent<FollowTransform>();
             Debug.Log($"✅ Added FollowTransform component to {worldObject.name}");
-            
+
             // Initialize with hand settings
             followTransform.Initialize(worldObject, handTransform, ownerClientId, handOffset, handRotation, handScale);
-            Debug.Log($"✅ Initialized FollowTransform with handOffset={handOffset}, handRotation={handRotation}, handScale={handScale}");
-            
+            Debug.Log(
+                $"✅ Initialized FollowTransform with handOffset={handOffset}, handRotation={handRotation}, handScale={handScale}");
+
             // Set up physics
             Rigidbody rb = worldObject.GetComponent<Rigidbody>();
-            if (rb != null) 
+            if (rb != null)
             {
                 rb.isKinematic = true;
                 Debug.Log($"🎈 Set Rigidbody to kinematic");
             }
 
             Collider col = worldObject.GetComponent<Collider>();
-            if (col != null) 
+            if (col != null)
             {
                 col.enabled = false;
                 Debug.Log($"🚫 Disabled Collider");
             }
 
             bobTimer = 0f;
-            
+
             // Verify the component was added
             FollowTransform verifyFollow = worldObject.GetComponent<FollowTransform>();
             if (verifyFollow != null)
@@ -293,7 +315,8 @@ public class HeldItemManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log($"👁️ This client ({NetworkManager.Singleton.LocalClientId}) is not the owner ({ownerClientId}), skipping FollowTransform setup");
+            Debug.Log(
+                $"👁️ This client ({NetworkManager.Singleton.LocalClientId}) is not the owner ({ownerClientId}), skipping FollowTransform setup");
         }
 
         Debug.Log($"📋 Setup held item {worldObject.name} for owner {ownerClientId} - COMPLETE");
@@ -320,7 +343,7 @@ public class HeldItemManager : NetworkBehaviour
             Debug.LogWarning($"⏰ Timed out waiting for ownership of {netObj.name}");
         }
     }
-    
+
     private void SetupFollowTransform(GameObject worldObject, ulong ownerClientId)
     {
         if (handTransform == null)
@@ -344,7 +367,7 @@ public class HeldItemManager : NetworkBehaviour
         if (col != null) col.enabled = false;
     }
 
-    
+
     // Put back item method
     public InventoryItemData PutBackItem()
     {
@@ -352,12 +375,12 @@ public class HeldItemManager : NetworkBehaviour
             return null;
 
         InventoryItemData itemToReturn = currentHeldItem;
-        
+
         HideItemFromHand();
-        
+
         currentHeldItem = null;
         heldItemSlotIndex = -1;
-        
+
         return itemToReturn;
     }
 
@@ -368,12 +391,12 @@ public class HeldItemManager : NetworkBehaviour
             return null;
 
         InventoryItemData usedItem = currentHeldItem;
-        
+
         HideItemFromHand();
-        
+
         currentHeldItem = null;
         heldItemSlotIndex = -1;
-        
+
         return usedItem;
     }
 
@@ -382,7 +405,7 @@ public class HeldItemManager : NetworkBehaviour
     {
         if (currentHeldWorldObject == null || currentHeldNetworkItem == null)
             return;
-        
+
         Destroy(currentHeldWorldObject.GetComponent<FollowTransform>());
 
         if (IsServer)
@@ -398,7 +421,8 @@ public class HeldItemManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ReleaseHeldItemServerRpc(ulong itemNetworkId)
     {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId,
+                out NetworkObject itemNetObj))
             return;
 
         ReleaseHeldItemClientRpc(itemNetworkId);
@@ -407,45 +431,49 @@ public class HeldItemManager : NetworkBehaviour
     [ClientRpc]
     private void ReleaseHeldItemClientRpc(ulong itemNetworkId)
     {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId,
+                out NetworkObject itemNetObj))
             return;
 
         GameObject worldObject = itemNetObj.gameObject;
-        
+
         // Restore original scale
         worldObject.transform.localScale = objectOriginalScale;
-        
+
         // Clean up FollowTransform
         FollowTransform followTransform = worldObject.GetComponent<FollowTransform>();
         if (followTransform != null)
         {
             Destroy(followTransform);
         }
-        
+
         // Restore physics
         Rigidbody rb = worldObject.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.isKinematic = false;
         }
-        
+
         Collider col = worldObject.GetComponent<Collider>();
         if (col != null)
         {
             col.enabled = true;
         }
-        
+
         // Hide the object
         worldObject.SetActive(false);
-        
+
         Debug.Log($"📋 Released held item {worldObject.name}");
-        
+
         // Clear references if this is the current held object
         if (currentHeldWorldObject == worldObject)
         {
             currentHeldWorldObject = null;
             currentHeldNetworkItem = null;
         }
+
+        _noteController.DisableNote();
+        _noteController = null;
     }
 
     // REMAINING ANIMATION CODE (unchanged)
@@ -469,9 +497,9 @@ public class HeldItemManager : NetworkBehaviour
             {
                 speedMultiplier = isSprinting ? 2f : 1.5f;
             }
-            
+
             bobTimer += Time.deltaTime * bobbingSpeed * speedMultiplier;
-            
+
             float bobOffset = Mathf.Sin(bobTimer) * bobbingAmount;
             targetPosition.y += bobOffset;
             if (isMoving)
@@ -484,10 +512,10 @@ public class HeldItemManager : NetworkBehaviour
         {
             Vector2 targetSway = new Vector2(-lookInput.x, -lookInput.y) * swayAmount;
             currentSway = Vector2.Lerp(currentSway, targetSway, Time.deltaTime * swaySmooth);
-            
+
             targetPosition.x += currentSway.x;
             targetPosition.y += currentSway.y;
-            
+
             targetRotation.z += currentSway.x * 10f;
             targetRotation.x += currentSway.y * 10f;
         }
@@ -500,14 +528,14 @@ public class HeldItemManager : NetworkBehaviour
         {
             Vector2 targetMovementSway = new Vector2(-moveInput.x, -moveInput.y) * movementSwayAmount;
             currentMovementSway = Vector2.Lerp(currentMovementSway, targetMovementSway, Time.deltaTime * swaySmooth);
-            
+
             targetPosition.x += currentMovementSway.x;
             targetPosition.z += currentMovementSway.y * 0.5f;
 
             float tiltMultiplier = isSprinting ? 1.5f : 1f;
             targetRotation.z += moveInput.x * movementTiltAmount * tiltMultiplier;
             targetRotation.x += moveInput.y * movementTiltAmount * 0.5f * tiltMultiplier;
-            
+
             if (isMoving)
             {
                 float movementBob = Mathf.Sin(bobTimer * 1.5f) * bobbingAmount * 0.3f;
@@ -528,11 +556,11 @@ public class HeldItemManager : NetworkBehaviour
         }
 
         currentHeldWorldObject.transform.localPosition = Vector3.Lerp(
-            currentHeldWorldObject.transform.localPosition, 
-            targetPosition, 
+            currentHeldWorldObject.transform.localPosition,
+            targetPosition,
             Time.deltaTime * 8f
         );
-        
+
         currentHeldWorldObject.transform.localRotation = Quaternion.Lerp(
             currentHeldWorldObject.transform.localRotation,
             Quaternion.Euler(targetRotation),
@@ -544,7 +572,7 @@ public class HeldItemManager : NetworkBehaviour
     public GameObject GetHeldWorldObject() => currentHeldWorldObject;
     public Vector3 GetOriginalScale() => objectOriginalScale;
     public void SetHandTransform(Transform newHandTransform) => handTransform = newHandTransform;
-    
+
     public void SetAnimationSettings(bool bobbing, bool sway, bool tilt, bool movementSway = true)
     {
         enableBobbing = bobbing;
@@ -571,20 +599,20 @@ public class HeldItemManager : NetworkBehaviour
     public void ReleaseForInspect()
     {
         if (currentHeldWorldObject == null) return;
-        
+
         currentHeldWorldObject.transform.SetParent(null);
         isInInspectMode = true;
-        
+
         Debug.Log($"🔍 Released {currentHeldWorldObject.name} for inspection");
     }
 
     public void RecoverFromInspect()
     {
         if (currentHeldWorldObject == null || !isInInspectMode) return;
-        
+
         ShowItemInHand(currentHeldWorldObject, NetworkManager.Singleton.LocalClientId);
         isInInspectMode = false;
-        
+
         Debug.Log($"🔍 Recovered {currentHeldWorldObject.name} from inspection");
     }
 }

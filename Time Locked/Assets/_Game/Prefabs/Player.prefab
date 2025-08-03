@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 8909017416954996962}
   - component: {fileID: 4278644876511846726}
   - component: {fileID: 8070851626058297416}
+  - component: {fileID: 8420414600087511677}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -502,7 +503,7 @@ MonoBehaviour:
   handTransform: {fileID: 5933922560157869859}
   handOffset: {x: 0, y: 0, z: 0}
   handRotation: {x: 0, y: 0, z: 0}
-  handScale: 0.1
+  handScale: 0.5
   enableBobbing: 1
   bobbingSpeed: 2
   bobbingAmount: 0.05
@@ -543,6 +544,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33f302b80809c8a438421869da46e932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8420414600087511677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5981014076278248294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2974149c6fb01b409a280581634da96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &618538459500499354
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -551,6 +564,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4797327361026157811}
     m_Modifications:
+    - target: {fileID: 518437602624199001, guid: 343f8be9a7fc8b04aafa044e4a3030c8, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2422734399
+      objectReference: {fileID: 0}
     - target: {fileID: 4959159030605716514, guid: 343f8be9a7fc8b04aafa044e4a3030c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -578,6 +595,10 @@ PrefabInstance:
     - target: {fileID: 4959159030605716514, guid: 343f8be9a7fc8b04aafa044e4a3030c8, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6666567291395446607, guid: 343f8be9a7fc8b04aafa044e4a3030c8, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2640428777
       objectReference: {fileID: 0}
     - target: {fileID: 6743497939080498508, guid: 343f8be9a7fc8b04aafa044e4a3030c8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -652,6 +673,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4797327361026157811}
     m_Modifications:
+    - target: {fileID: 3811359538754444258, guid: 8ebad78a97277d647a4b78fdd2ed431b, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3566719295
+      objectReference: {fileID: 0}
     - target: {fileID: 5247199766744445795, guid: 8ebad78a97277d647a4b78fdd2ed431b, type: 3}
       propertyPath: m_Name
       value: InspectHolder
