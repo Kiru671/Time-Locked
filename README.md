@@ -221,7 +221,7 @@ Shorter times between task updates were agreed upon, with at least two status up
 <details> <summary><h3>Product Progress Screenshots:</h3></summary>
   
   ![Alt Text](Readme_Images/Ambiance%20TimeLocked.gif)
-  ![SS1](Readme_Images/chess.jpg)
+  ![SS1](<img width="829" height="653" alt="image" src="https://github.com/user-attachments/assets/c49579e8-f168-4f45-8422-35208bd2d58f" />)
   ![SS2](Readme_Images/clock.jpg)
   ![SS3](Readme_Images/Firebase.jpg) 
   ![SS5](Readme_Images/chatttt.png) 
