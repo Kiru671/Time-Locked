@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,6 +11,7 @@ public class RaycastInteraction : NetworkBehaviour
     private Camera cam;
     private IInteractable currentInteractable;
     private Outline lastOutline;
+    private PlayerInventory playerInventory;
 
 
     public override void OnNetworkSpawn()
@@ -18,6 +21,19 @@ public class RaycastInteraction : NetworkBehaviour
             this.enabled = false;
         }
     }
+
+    private IEnumerator GetPlayerInventory(IInteractable interactable)
+    {
+        while(playerInventory == null)
+        {
+            playerInventory = GetComponent<PlayerInventory>();
+            if (playerInventory != null) break;
+            yield return new WaitForSeconds(0.1f);
+        }
+        interactable.Interact(playerInventory);
+        UIManager.Instance.HideHint();
+    }
+    
     private void Start()
     {
         cam = Camera.main;
@@ -53,9 +69,8 @@ public class RaycastInteraction : NetworkBehaviour
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    var playerInventory = GetComponent<PlayerInventory>();
-                    interactable.Interact(playerInventory);
-                    UIManager.Instance.HideHint();
+                    Debug.Log("Pressed E");
+                    StartCoroutine(GetPlayerInventory(interactable));
                 }
             }
         }
@@ -66,8 +81,8 @@ public class RaycastInteraction : NetworkBehaviour
             var interactable = mirrorHit.collider.GetComponent<Mirror>();
             if (Input.GetKeyDown(KeyCode.E))
             {
-                var playerInventory = GetComponent<PlayerInventory>();
-                interactable.SendItem(playerInventory.heldItemManager.currentHeldNetworkItem.NetworkObjectId);
+                var playerInventory = gameObject.GetComponent<PlayerInventory>();
+                interactable.SendItem(playerInventory.heldItemManager.currentHeldNetworkItem.NetworkObjectId, playerInventory);
                 UIManager.Instance.HideHint();
             }
         }

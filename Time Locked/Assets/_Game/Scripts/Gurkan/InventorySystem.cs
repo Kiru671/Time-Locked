@@ -18,6 +18,20 @@ public class InventorySystem : MonoBehaviour
         }
         return false; // Envanter dolu
     }
+    public bool CanAddItem()
+    {
+        // Check if there's any empty slot
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] == null)
+            {
+                Debug.Log($"Slot {i} is empty. Can add item.");
+                return true;
+            }
+        }
+        Debug.Log("No empty slots available. Cannot add item.");
+        return false;
+    }
 
     public bool HasItem(string itemName)
     {

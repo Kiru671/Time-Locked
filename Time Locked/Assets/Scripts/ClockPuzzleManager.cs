@@ -97,7 +97,7 @@ public class ClockPuzzleManager : NetworkBehaviour
         // Debug log'u çok sık yazdırmamak için sadece değişiklik olduğunda yazdır
         if (Time.frameCount % 60 == 0) // Her saniye bir kez
         {
-            Debug.Log(debugInfo);
+            //Debug.Log(debugInfo);
         }
     }
 }

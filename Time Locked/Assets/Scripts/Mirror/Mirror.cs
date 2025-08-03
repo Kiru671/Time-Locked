@@ -102,9 +102,18 @@ public class Mirror : NetworkBehaviour
         return null;
     }
     
-    public void SendItem(ulong itemId)
+    public void SendItem(ulong itemId, PlayerInventory playerInv)
     {
         Debug.LogWarning("Item sent");
         mirrorManager.TriggerItems(itemId, transform.parent.GetComponent<MirrorGroup>().groupId);
+
+        HeldItemManager heldItemManager = FindAnyObjectByType<HeldItemManager>();
+
+        // ❗ Use InventoryItemData directly, not GetComponent
+        playerInv.TryRemoveItem(heldItemManager.CurrentHeldItem.itemName);
+
+        heldItemManager.HideItemFromHand();
+
+        playerInv.uiController.RefreshUI(playerInv.inventorySystem, heldItemManager);
     }
 }

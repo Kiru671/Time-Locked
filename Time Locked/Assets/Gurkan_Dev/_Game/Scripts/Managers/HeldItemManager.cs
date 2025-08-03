@@ -1,3 +1,5 @@
+// ===== FIXED HeldItemManager.cs =====
+using System.Collections;
 using UnityEngine;
 using StarterAssets;
 using Unity.Netcode;
@@ -7,34 +9,34 @@ using Unity.VisualScripting;
 public class HeldItemManager : NetworkBehaviour
 {
     [Header("Hand Settings")]
-    [SerializeField] private Transform handTransform; // Elimdeki objenin görüneceği yer
-    [SerializeField] private Vector3 handOffset = Vector3.zero; // El pozisyon offseti
-    [SerializeField] private Vector3 handRotation = Vector3.zero; // El rotasyon offseti
-    [SerializeField] private float handScale = 1f; // Eldeki obje scale'i
+    [SerializeField] private Transform handTransform;
+    [SerializeField] private Vector3 handOffset = Vector3.zero;
+    [SerializeField] private Vector3 handRotation = Vector3.zero;
+    [SerializeField] private float handScale = 1f;
 
     [Header("Animation Settings")]
-    [SerializeField] private bool enableBobbing = true; // Sallanma efekti
-    [SerializeField] private float bobbingSpeed = 2f; // Sallanma hızı
-    [SerializeField] private float bobbingAmount = 0.05f; // Sallanma miktarı
-    [SerializeField] private bool enableSway = true; // Mouse ile sway efekti
-    [SerializeField] private float swayAmount = 0.02f; // Sway miktarı
-    [SerializeField] private float swaySmooth = 4f; // Sway smoothness
-    [SerializeField] private bool enableTilt = true; // Yürürken eğilme
-    [SerializeField] private float tiltAmount = 5f; // Eğilme derecesi
-    [SerializeField] private bool enableMovementSway = true; // WASD ile sway efekti
-    [SerializeField] private float movementSwayAmount = 0.04f; // Hareket sway miktarı
-    [SerializeField] private float movementTiltAmount = 8f; // Hareket eğilme miktarı
+    [SerializeField] private bool enableBobbing = true;
+    [SerializeField] private float bobbingSpeed = 2f;
+    [SerializeField] private float bobbingAmount = 0.05f;
+    [SerializeField] private bool enableSway = true;
+    [SerializeField] private float swayAmount = 0.02f;
+    [SerializeField] private float swaySmooth = 4f;
+    [SerializeField] private bool enableTilt = true;
+    [SerializeField] private float tiltAmount = 5f;
+    [SerializeField] private bool enableMovementSway = true;
+    [SerializeField] private float movementSwayAmount = 0.04f;
+    [SerializeField] private float movementTiltAmount = 8f;
 
     [Header("Controller Integration")]
-    [SerializeField] private FirstPersonController fpsController; // FPS Controller referansı
-    [SerializeField] private bool autoFindController = true; // Otomatik controller bulma
+    [SerializeField] private FirstPersonController fpsController;
+    [SerializeField] private bool autoFindController = true;
 
     private InventoryItemData currentHeldItem;
     public NetworkObject currentHeldNetworkItem;
     private int heldItemSlotIndex = -1;
-    private GameObject currentHeldWorldObject; // Elimizdeki fiziksel obje
-    private bool isInInspectMode = false; // Inspect modunda mı
-    private Vector3 objectOriginalScale; // Objenin gerçek orijinal scale'i (handScale uygulanmadan önce)
+    private GameObject currentHeldWorldObject;
+    private bool isInInspectMode = false;
+    private Vector3 objectOriginalScale;
     [SerializeField] private Transform camFollow;
 
     // Animation variables
@@ -43,7 +45,7 @@ public class HeldItemManager : NetworkBehaviour
     private float bobTimer = 0f;
     private Vector2 currentSway;
     private Vector2 currentMovementSway;
-    private StarterAssetsInputs fpsInput; // FPS Controller input'u
+    private StarterAssetsInputs fpsInput;
 
     public InventoryItemData CurrentHeldItem => currentHeldItem;
     public int HeldItemSlotIndex => heldItemSlotIndex;
@@ -52,36 +54,27 @@ public class HeldItemManager : NetworkBehaviour
 
     private void Start()
     {
-         if (NetworkManager.Singleton != null)
-    {
-        Debug.Log("=== REGISTERED NETWORK PREFABS ===");
-        var prefabsList = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
-        
-        for (int i = 0; i < prefabsList.Count; i++)
+        if (NetworkManager.Singleton != null)
         {
-            var prefab = prefabsList[i];
-            Debug.Log($"[{i}] Prefab: {prefab.Prefab.name} - Hash: {prefab.Prefab.GetComponent<NetworkObject>().PrefabIdHash}");
-        }
-    }
-        
-        // FPS Controller'ı otomatik bul
-        if (autoFindController && fpsController == null)
-        {
-            fpsController = FindObjectOfType<FirstPersonController>();
-            if (fpsController == null)
+            Debug.Log("=== REGISTERED NETWORK PREFABS ===");
+            var prefabsList = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
+
+            for (int i = 0; i < prefabsList.Count; i++)
             {
-                Debug.LogWarning("FirstPersonController not found! Hand animations may not work properly.");
+                var prefab = prefabsList[i];
+                Debug.Log($"[{i}] Prefab: {prefab.Prefab.name} - Hash: {prefab.Prefab.GetComponent<NetworkObject>().PrefabIdHash}");
+            }
+
+            if (autoFindController && fpsController == null)
+            {
+                fpsController = FindObjectOfType<FirstPersonController>();
+                if (fpsController == null)
+                {
+                    Debug.LogWarning("FirstPersonController not found! Hand animations may not work properly.");
+                }
             }
         }
-        RequestSpawnCameraServerRpc();
-        RequestSpawnServerRpc(camFollow.GetComponent<NetworkObject>().NetworkObjectId);
-        RequestSpawnServerRpc(handTransform.GetComponent<NetworkObject>().NetworkObjectId);
-        NetworkObject camTR_ = camFollow.GetComponent<NetworkObject>();
-        NetworkObject handTransformNetworkObject = handTransform.GetComponent<NetworkObject>();
-        RequestReparentServerRpc(handTransformNetworkObject.NetworkObjectId, camTR_.NetworkObjectId, NetworkManager.Singleton.LocalClientId);
-        RequestReparentServerRpc(camTR_.NetworkObjectId, GetComponent<NetworkObject>().NetworkObjectId, NetworkManager.Singleton.LocalClientId);
-        
-        // Input componenti al
+
         if (fpsController != null)
         {
             fpsInput = fpsController.GetComponent<StarterAssetsInputs>();
@@ -91,24 +84,45 @@ public class HeldItemManager : NetworkBehaviour
             }
         }
     }
+    
+    // Add this method to your HeldItemManager for debugging
+    [ContextMenu("Debug Hand Transform")]
+    private void DebugHandTransform()
+    {
+        Debug.Log($"🤏 Hand Transform Debug:");
+        Debug.Log($"   - handTransform: {handTransform?.name ?? "NULL"}");
+        Debug.Log($"   - handTransform position: {handTransform?.position ?? Vector3.zero}");
+        Debug.Log($"   - handOffset: {handOffset}");
+        Debug.Log($"   - handRotation: {handRotation}");
+        Debug.Log($"   - handScale: {handScale}");
+        Debug.Log($"   - currentHeldWorldObject: {currentHeldWorldObject?.name ?? "NULL"}");
+    }
 
     private void Update()
     {
         if (currentHeldWorldObject != null && handTransform != null && !isInInspectMode)
         {
-            UpdateHeldItemAnimation();
+            // Check if the object has a FollowTransform component
+            FollowTransform followTransform = currentHeldWorldObject.GetComponent<FollowTransform>();
+        
+            // Only run our animation system if there's no FollowTransform
+            if (followTransform == null)
+            {
+                UpdateHeldItemAnimation();
+            }
         }
     }
 
-    // Eşyayı ele alma (dünya objesini de belirt)
+    // FIXED: Take item method
+    // FIXED: TakeItem method - get the correct client ID
+   // In HeldItemManager.cs
     public bool TakeItem(InventoryItemData item, int slotIndex, GameObject worldObject = null)
     {
-        if (IsHoldingItem)
-        {
-            return false; // Zaten bir eşya tutuyor
-        }
+        if (IsHoldingItem) return false;
 
         currentHeldItem = item;
+        heldItemSlotIndex = slotIndex;
+
         if (worldObject != null)
         {
             currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
@@ -118,53 +132,32 @@ public class HeldItemManager : NetworkBehaviour
                 return false;
             }
 
-            heldItemSlotIndex = slotIndex;
+            // Ensure the object is active before proceeding
+            worldObject.SetActive(true);
+        
+            // Request server to handle the ownership transfer
+            RequestItemOwnershipServerRpc(currentHeldNetworkItem.NetworkObjectId, NetworkManager.Singleton.LocalClientId);
 
-            // Eğer dünya objesi verilmişse elimde göster
-            if (worldObject != null)
-            {
-                ShowItemInHand(worldObject);
-            }
+            ShowItemInHand(worldObject, NetworkManager.Singleton.LocalClientId);
         }
         return true;
     }
 
-    // Eşyayı geri bırakma
-    public InventoryItemData PutBackItem()
+    [ServerRpc]
+    private void RequestItemOwnershipServerRpc(ulong itemNetworkId, ulong requestingClientId)
     {
-        if (!IsHoldingItem)
-            return null;
-
-        InventoryItemData itemToReturn = currentHeldItem;
-        
-        // Eldeki objeyi gizle
-        HideItemFromHand();
-        
-        currentHeldItem = null;
-        heldItemSlotIndex = -1;
-        
-        return itemToReturn;
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        {
+            Debug.LogError($"Could not find NetworkObject with ID {itemNetworkId}");
+            return;
+        }
+    
+        // Change ownership to the client who requested it
+        itemNetObj.ChangeOwnership(requestingClientId);
     }
 
-    // Eşyayı kullanma (consume etme)
-    public InventoryItemData UseHeldItem()
-    {
-        if (!IsHoldingItem)
-            return null;
-
-        InventoryItemData usedItem = currentHeldItem;
-        
-        // Eldeki objeyi gizle
-        HideItemFromHand();
-        
-        currentHeldItem = null;
-        heldItemSlotIndex = -1;
-        
-        return usedItem;
-    }
-
-    // Objeyi elimde göster
-    private void ShowItemInHand(GameObject worldObject)
+    // FIXED: ShowItemInHand with clientId parameter
+    private void ShowItemInHand(GameObject worldObject, ulong requestingClientId)
     {
         if (handTransform == null)
         {
@@ -174,116 +167,319 @@ public class HeldItemManager : NetworkBehaviour
 
         currentHeldWorldObject = worldObject;
         currentHeldNetworkItem = worldObject.GetComponent<NetworkObject>();
+
         
-        // Objenin orijinal scale'ini kaydet (handScale uygulanmadan önce)
+        
+
+        if (currentHeldNetworkItem == null)
+        {
+            Debug.LogError("Current held item does not have a NetworkObject component!");
+            return;
+        }
+
         objectOriginalScale = worldObject.transform.localScale;
-        
-        // Objeyi elin pozisyonuna getir
-        RequestReparentServerRpc(currentHeldNetworkItem.NetworkObjectId, handTransform.GetComponent<NetworkObject>().NetworkObjectId);
-        worldObject.transform.localPosition = handOffset;
-        worldObject.transform.localRotation = Quaternion.Euler(handRotation);
-        worldObject.transform.localScale = objectOriginalScale * handScale; // Orijinal scale * handScale
-        
-        // Orijinal pozisyon ve rotasyonu kaydet (animasyon için)
-        originalLocalPosition = handOffset;
         originalLocalRotation = handRotation;
-        
-        // Objeyi aktif et (pickup sırasında deaktif edilmişti)
-        worldObject.SetActive(true);
-        
-        // Rigidbody varsa kinematic yap (elimden düşmesin)
-        Rigidbody rb = worldObject.GetComponent<Rigidbody>();
-        if (rb != null)
+
+        // FIXED: Now we have requestingClientId
+        if (IsServer)
         {
-            rb.isKinematic = true;
+            Debug.Log( $"🔍 SetupHeldItemServerRpc called: ItemId={currentHeldNetworkItem.NetworkObjectId}, OwnerClientId={requestingClientId}");
+            SetupHeldItemServerRpc(currentHeldNetworkItem.NetworkObjectId, requestingClientId);
         }
-        
-        // Collider'ı deaktif et (elimdeyken collision olmasın)
-        Collider col = worldObject.GetComponent<Collider>();
-        if (col != null)
+        else
         {
-            col.enabled = false;
+            Debug.Log($"🔍 SetupHeldItemServerRpc called (Client): ItemId={currentHeldNetworkItem.NetworkObjectId}, OwnerClientId={requestingClientId}");
+            SetupHeldItemServerRpc(currentHeldNetworkItem.NetworkObjectId, requestingClientId);
         }
-        
-        // Animation timer'ı sıfırla
-        bobTimer = 0f;
-        
-        Debug.Log($"📋 Showing {worldObject.name} in hand with FPS-integrated animations");
     }
 
-    // Objeyi elimden gizle
-    private void HideItemFromHand()
+    [ServerRpc(RequireOwnership = false)]
+    private void SetupHeldItemServerRpc(ulong itemNetworkId, ulong newOwnerClientId)
     {
-        if (currentHeldWorldObject == null)
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        {
+            Debug.LogError($"Could not find NetworkObject with ID {itemNetworkId}");
             return;
+        }
+
+        // Change ownership to the client who picked it up
+        itemNetObj.ChangeOwnership(newOwnerClientId);
+        
+        // Setup the item for being held
+        SetupHeldItemClientRpc(itemNetworkId, newOwnerClientId);
+    }
+
+   [ClientRpc]
+    private void SetupHeldItemClientRpc(ulong itemNetworkId, ulong ownerClientId)
+    {
+        Debug.Log($"🔍 SetupHeldItemClientRpc called: ItemId={itemNetworkId}, OwnerClientId={ownerClientId}, LocalClientId={NetworkManager.Singleton.LocalClientId}");
+        
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+        {
+            Debug.LogError($"❌ Could not find NetworkObject with ID {itemNetworkId}");
+            return;
+        }
+
+        GameObject worldObject = itemNetObj.gameObject;
+        Debug.Log($"🎯 Found NetworkObject: {worldObject.name}");
+        
+        // Activate the object FIRST
+        worldObject.SetActive(true);
+        Debug.Log($"✅ Activated object: {worldObject.name}");
+        
+        // Only the owner should set up the FollowTransform
+        if (itemNetObj.IsOwner)
+        {
             
-        // Parent'ı kaldır
-        currentHeldWorldObject.transform.SetParent(null);
+            StartCoroutine(WaitForOwnership(itemNetObj, () =>
+            {
+                SetupFollowTransform(itemNetObj.gameObject, ownerClientId);
+            }));
+            
+            Debug.Log($"🎮 This client ({NetworkManager.Singleton.LocalClientId}) is the owner, setting up FollowTransform...");
+            
+            // Remove existing FollowTransform if any
+            FollowTransform existingFollow = worldObject.GetComponent<FollowTransform>();
+            if (existingFollow != null)
+            {
+                Debug.Log($"🗑️ Destroying existing FollowTransform");
+                Destroy(existingFollow);
+            }
+
+            // Check if handTransform is valid
+            if (handTransform == null)
+            {
+                Debug.LogError($"❌ handTransform is null! Cannot create FollowTransform");
+                return;
+            }
+
+            Debug.Log($"🤏 HandTransform found: {handTransform.name} at {handTransform.position}");
+
+            // Add new FollowTransform with hand settings
+            FollowTransform followTransform = worldObject.AddComponent<FollowTransform>();
+            Debug.Log($"✅ Added FollowTransform component to {worldObject.name}");
+            
+            // Initialize with hand settings
+            followTransform.Initialize(worldObject, handTransform, ownerClientId, handOffset, handRotation, handScale);
+            Debug.Log($"✅ Initialized FollowTransform with handOffset={handOffset}, handRotation={handRotation}, handScale={handScale}");
+            
+            // Set up physics
+            Rigidbody rb = worldObject.GetComponent<Rigidbody>();
+            if (rb != null) 
+            {
+                rb.isKinematic = true;
+                Debug.Log($"🎈 Set Rigidbody to kinematic");
+            }
+
+            Collider col = worldObject.GetComponent<Collider>();
+            if (col != null) 
+            {
+                col.enabled = false;
+                Debug.Log($"🚫 Disabled Collider");
+            }
+
+            bobTimer = 0f;
+            
+            // Verify the component was added
+            FollowTransform verifyFollow = worldObject.GetComponent<FollowTransform>();
+            if (verifyFollow != null)
+            {
+                Debug.Log($"✅ FollowTransform successfully attached and verified!");
+            }
+            else
+            {
+                Debug.LogError($"❌ FollowTransform failed to attach!");
+            }
+        }
+        else
+        {
+            Debug.Log($"👁️ This client ({NetworkManager.Singleton.LocalClientId}) is not the owner ({ownerClientId}), skipping FollowTransform setup");
+        }
+
+        Debug.Log($"📋 Setup held item {worldObject.name} for owner {ownerClientId} - COMPLETE");
+    }
+
+    private IEnumerator WaitForOwnership(NetworkObject netObj, System.Action onOwnershipConfirmed)
+    {
+        float timeout = 2f; // Max wait time in seconds
+        float elapsed = 0f;
+
+        while (!netObj.IsOwner && elapsed < timeout)
+        {
+            yield return null; // Wait for next frame
+            elapsed += Time.deltaTime;
+        }
+
+        if (netObj.IsOwner)
+        {
+            Debug.Log($"✅ Ownership confirmed for {netObj.name}!");
+            onOwnershipConfirmed?.Invoke();
+        }
+        else
+        {
+            Debug.LogWarning($"⏰ Timed out waiting for ownership of {netObj.name}");
+        }
+    }
+    
+    private void SetupFollowTransform(GameObject worldObject, ulong ownerClientId)
+    {
+        if (handTransform == null)
+        {
+            Debug.LogError("❌ Hand transform is null!");
+            return;
+        }
+
+        // Remove existing FollowTransform
+        FollowTransform existing = worldObject.GetComponent<FollowTransform>();
+        if (existing != null) Destroy(existing);
+
+        FollowTransform follow = worldObject.AddComponent<FollowTransform>();
+        follow.Initialize(worldObject, handTransform, ownerClientId, handOffset, handRotation, handScale);
+        Debug.Log("✅ FollowTransform setup complete");
+
+        Rigidbody rb = worldObject.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+
+        Collider col = worldObject.GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+    }
+
+    
+    // Put back item method
+    public InventoryItemData PutBackItem()
+    {
+        if (!IsHoldingItem)
+            return null;
+
+        InventoryItemData itemToReturn = currentHeldItem;
         
-        // *** ÖNEMLİ: Scale'i orijinaline geri döndür ***
-        currentHeldWorldObject.transform.localScale = objectOriginalScale;
-        Debug.Log($"📋 Restored original scale: {objectOriginalScale} for {currentHeldWorldObject.name}");
+        HideItemFromHand();
         
-        // Rigidbody'yi normale döndür
-        Rigidbody rb = currentHeldWorldObject.GetComponent<Rigidbody>();
+        currentHeldItem = null;
+        heldItemSlotIndex = -1;
+        
+        return itemToReturn;
+    }
+
+    // Use held item method
+    public InventoryItemData UseHeldItem()
+    {
+        if (!IsHoldingItem)
+            return null;
+
+        InventoryItemData usedItem = currentHeldItem;
+        
+        HideItemFromHand();
+        
+        currentHeldItem = null;
+        heldItemSlotIndex = -1;
+        
+        return usedItem;
+    }
+
+    // FIXED: HideItemFromHand method
+    public void HideItemFromHand()
+    {
+        if (currentHeldWorldObject == null || currentHeldNetworkItem == null)
+            return;
+        
+        Destroy(currentHeldWorldObject.GetComponent<FollowTransform>());
+
+        if (IsServer)
+        {
+            ReleaseHeldItemServerRpc(currentHeldNetworkItem.NetworkObjectId);
+        }
+        else
+        {
+            ReleaseHeldItemServerRpc(currentHeldNetworkItem.NetworkObjectId);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ReleaseHeldItemServerRpc(ulong itemNetworkId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+            return;
+
+        ReleaseHeldItemClientRpc(itemNetworkId);
+    }
+
+    [ClientRpc]
+    private void ReleaseHeldItemClientRpc(ulong itemNetworkId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(itemNetworkId, out NetworkObject itemNetObj))
+            return;
+
+        GameObject worldObject = itemNetObj.gameObject;
+        
+        // Restore original scale
+        worldObject.transform.localScale = objectOriginalScale;
+        
+        // Clean up FollowTransform
+        FollowTransform followTransform = worldObject.GetComponent<FollowTransform>();
+        if (followTransform != null)
+        {
+            Destroy(followTransform);
+        }
+        
+        // Restore physics
+        Rigidbody rb = worldObject.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.isKinematic = false;
         }
         
-        // Collider'ı aktif et
-        Collider col = currentHeldWorldObject.GetComponent<Collider>();
+        Collider col = worldObject.GetComponent<Collider>();
         if (col != null)
         {
             col.enabled = true;
         }
         
-        // Objeyi gizle (envantere geri dönüyor)
-        currentHeldWorldObject.SetActive(false);
+        // Hide the object
+        worldObject.SetActive(false);
         
-        Debug.Log($"📋 Hidden {currentHeldWorldObject.name} from hand");
+        Debug.Log($"📋 Released held item {worldObject.name}");
         
-        currentHeldWorldObject = null;
+        // Clear references if this is the current held object
+        if (currentHeldWorldObject == worldObject)
+        {
+            currentHeldWorldObject = null;
+            currentHeldNetworkItem = null;
+        }
     }
 
-    // Eldeki obje animasyonunu güncelle (FPS Controller ile entegre)
+    // REMAINING ANIMATION CODE (unchanged)
     private void UpdateHeldItemAnimation()
     {
         if (fpsInput == null || fpsController == null) return;
 
-        // FPS Controller'dan hareket verilerini al
-        Vector2 moveInput = fpsInput.move; // WASD
-        Vector2 lookInput = fpsInput.look; // Mouse
+        Vector2 moveInput = fpsInput.move;
+        Vector2 lookInput = fpsInput.look;
         bool isMoving = moveInput.magnitude > 0.1f;
         bool isGrounded = fpsController.Grounded;
         bool isSprinting = fpsInput.sprint;
 
-        // Animasyonları hesapla
         Vector3 targetPosition = originalLocalPosition;
         Vector3 targetRotation = originalLocalRotation;
 
-        // Bobbing efekti (yürürken yukarı aşağı sallanma)
         if (enableBobbing && isGrounded)
         {
             float speedMultiplier = 1f;
             if (isMoving)
             {
-                speedMultiplier = isSprinting ? 2f : 1.5f; // Sprint'te daha hızlı
+                speedMultiplier = isSprinting ? 2f : 1.5f;
             }
             
             bobTimer += Time.deltaTime * bobbingSpeed * speedMultiplier;
             
             float bobOffset = Mathf.Sin(bobTimer) * bobbingAmount;
             targetPosition.y += bobOffset;
-            
-            // Yürürken hafif ileri geri hareket
             if (isMoving)
             {
                 targetPosition.z += Mathf.Cos(bobTimer * 0.5f) * bobbingAmount * 0.5f;
             }
         }
 
-        // Sway efekti (mouse hareketiyle yan sallanma)
         if (enableSway && lookInput.magnitude > 0.01f)
         {
             Vector2 targetSway = new Vector2(-lookInput.x, -lookInput.y) * swayAmount;
@@ -292,33 +488,26 @@ public class HeldItemManager : NetworkBehaviour
             targetPosition.x += currentSway.x;
             targetPosition.y += currentSway.y;
             
-            // Rotasyon sway'i
             targetRotation.z += currentSway.x * 10f;
             targetRotation.x += currentSway.y * 10f;
         }
         else
         {
-            // Sway'i yavaşça sıfırla
             currentSway = Vector2.Lerp(currentSway, Vector2.zero, Time.deltaTime * swaySmooth);
         }
 
-        // Movement Sway efekti (WASD ile momentum tabanlı sallanma)
         if (enableMovementSway && isGrounded)
         {
-            // Momentum efekti: Sağa gidince obje sola eğilir (atalet)
             Vector2 targetMovementSway = new Vector2(-moveInput.x, -moveInput.y) * movementSwayAmount;
             currentMovementSway = Vector2.Lerp(currentMovementSway, targetMovementSway, Time.deltaTime * swaySmooth);
             
-            // Pozisyon sway'i
             targetPosition.x += currentMovementSway.x;
-            targetPosition.z += currentMovementSway.y * 0.5f; // Z ekseni için daha az
+            targetPosition.z += currentMovementSway.y * 0.5f;
 
-            // Rotasyon sway'i (momentum tabanlı eğilme)
-            float tiltMultiplier = isSprinting ? 1.5f : 1f; // Sprint'te daha fazla eğilme
-            targetRotation.z += moveInput.x * movementTiltAmount * tiltMultiplier; // Sağa gidince sağa eğil
-            targetRotation.x += moveInput.y * movementTiltAmount * 0.5f * tiltMultiplier; // İleri gidince hafif öne eğil
+            float tiltMultiplier = isSprinting ? 1.5f : 1f;
+            targetRotation.z += moveInput.x * movementTiltAmount * tiltMultiplier;
+            targetRotation.x += moveInput.y * movementTiltAmount * 0.5f * tiltMultiplier;
             
-            // Ek bobbing efekti hareket ederken
             if (isMoving)
             {
                 float movementBob = Mathf.Sin(bobTimer * 1.5f) * bobbingAmount * 0.3f;
@@ -326,21 +515,18 @@ public class HeldItemManager : NetworkBehaviour
             }
         }
 
-        // Tilt efekti (yürürken eğilme)
         if (enableTilt && isMoving && isGrounded)
         {
             float tiltOffset = Mathf.Sin(bobTimer * 2f) * tiltAmount;
             targetRotation.z += tiltOffset;
         }
 
-        // Landing efekti (yere indiğinde)
         if (isGrounded && !isMoving)
         {
             float landingBob = Mathf.Sin(bobTimer * 0.5f) * bobbingAmount * 0.3f;
             targetPosition.y += landingBob;
         }
 
-        // Smooth geçiş
         currentHeldWorldObject.transform.localPosition = Vector3.Lerp(
             currentHeldWorldObject.transform.localPosition, 
             targetPosition, 
@@ -354,25 +540,11 @@ public class HeldItemManager : NetworkBehaviour
         );
     }
 
-    // Elimdeki objeyi al (placement için)
-    public GameObject GetHeldWorldObject()
-    {
-        return currentHeldWorldObject;
-    }
-
-    // Objenin orijinal scale'ini al
-    public Vector3 GetOriginalScale()
-    {
-        return objectOriginalScale;
-    }
-
-    // El transform'ını değiştirme
-    public void SetHandTransform(Transform newHandTransform)
-    {
-        handTransform = newHandTransform;
-    }
-
-    // Animation ayarlarını runtime'da değiştirme
+    // UTILITY METHODS (unchanged)
+    public GameObject GetHeldWorldObject() => currentHeldWorldObject;
+    public Vector3 GetOriginalScale() => objectOriginalScale;
+    public void SetHandTransform(Transform newHandTransform) => handTransform = newHandTransform;
+    
     public void SetAnimationSettings(bool bobbing, bool sway, bool tilt, bool movementSway = true)
     {
         enableBobbing = bobbing;
@@ -381,7 +553,6 @@ public class HeldItemManager : NetworkBehaviour
         enableMovementSway = movementSway;
     }
 
-    // FPS Controller referansını manuel ayarlama
     public void SetFPSController(FirstPersonController controller)
     {
         fpsController = controller;
@@ -391,151 +562,29 @@ public class HeldItemManager : NetworkBehaviour
         }
     }
 
-    // Inspect modu kontrolü
     public void SetInspectMode(bool inspectMode)
     {
         isInInspectMode = inspectMode;
         Debug.Log($"🎯 Held item inspect mode: {(inspectMode ? "ON" : "OFF")}");
     }
 
-    // Inspect modu için objeyi geçici olarak serbest bırak
     public void ReleaseForInspect()
     {
         if (currentHeldWorldObject == null) return;
         
-        // Sadece parent'ı kaldır - pozisyon ayarlamasını ItemInspector yapsın
         currentHeldWorldObject.transform.SetParent(null);
         isInInspectMode = true;
         
         Debug.Log($"🔍 Released {currentHeldWorldObject.name} for inspection");
     }
 
-    // Inspect'ten sonra objeyi geri al
     public void RecoverFromInspect()
     {
         if (currentHeldWorldObject == null || !isInInspectMode) return;
         
-        // Objeyi tekrar elin pozisyonuna getir
-        ShowItemInHand(currentHeldWorldObject);
+        ShowItemInHand(currentHeldWorldObject, NetworkManager.Singleton.LocalClientId);
         isInInspectMode = false;
         
         Debug.Log($"🔍 Recovered {currentHeldWorldObject.name} from inspection");
     }
-    
-    [ServerRpc(RequireOwnership = false)]
-    void RequestReparentServerRpc(ulong networkObjectId, ulong newParentId)
-    {
-        NetworkObject obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];
-        Transform newParent = NetworkManager.Singleton.SpawnManager.SpawnedObjects[newParentId].transform;
-        obj.transform.SetParent(newParent);
-    }
-
-        // SOLUTION 1: Proper ownership transfer with timing fixes
-    [ServerRpc(RequireOwnership = false)]
-    void RequestReparentServerRpc(ulong networkObjectId, ulong newParentId, ulong requestingClientId)
-    {
-        StartCoroutine(HandleReparentingProcess(networkObjectId, newParentId, requestingClientId));
-    }
-
-    private System.Collections.IEnumerator HandleReparentingProcess(ulong networkObjectId, ulong newParentId,
-        ulong requestingClientId)
-    {
-        // Wait for objects to be fully spawned
-        yield return new WaitForEndOfFrame();
-
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject obj))
-        {
-            Debug.LogError($"Could not find NetworkObject with ID {networkObjectId}");
-            yield break;
-        }
-
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(newParentId, out NetworkObject parentObj))
-        {
-            Debug.LogError($"Could not find parent NetworkObject with ID {newParentId}");
-            yield break;
-        }
-
-        Debug.Log($"Attempting to reparent {obj.name} under {parentObj.name}");
-        Debug.Log(
-            $"Object owner: {obj.OwnerClientId}, Parent owner: {parentObj.OwnerClientId}, Requesting client: {requestingClientId}");
-
-        // Method 1: Change ownership to requesting client
-        if (obj.OwnerClientId != requestingClientId)
-        {
-            obj.ChangeOwnership(requestingClientId);
-            yield return new WaitForFixedUpdate(); // Wait for ownership to propagate
-            Debug.Log($"Changed ownership to client {requestingClientId}");
-        }
-
-        // Method 2: If that doesn't work, try changing parent ownership too
-        if (parentObj.OwnerClientId != requestingClientId)
-        {
-            parentObj.ChangeOwnership(requestingClientId);
-            yield return new WaitForFixedUpdate();
-            Debug.Log($"Changed parent ownership to client {requestingClientId}");
-        }
-
-        yield return new WaitForFixedUpdate();
-        
-        // Now attempt reparenting
-        try
-        {
-            obj.transform.SetParent(parentObj.transform);
-            Debug.Log($"Successfully reparented {obj.name} to {parentObj.name}");
-
-            // Force sync to all clients
-            ForceReparentClientRpc(networkObjectId, newParentId);
-        }
-        
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Reparenting failed: {e.Message}");
-
-            // Fallback: Try to make both objects server-owned
-            obj.ChangeOwnership(NetworkManager.ServerClientId);
-            parentObj.ChangeOwnership(NetworkManager.ServerClientId);
-
-            try
-            {
-                obj.transform.SetParent(parentObj.transform);
-                Debug.Log($"Reparenting succeeded with server ownership");
-                ForceReparentClientRpc(networkObjectId, newParentId);
-            }
-            catch (System.Exception e2)
-            {
-                Debug.LogError($"Even server ownership reparenting failed: {e2.Message}");
-            }
-        }
-    }
-
-
-    [ClientRpc]
-    void ForceReparentClientRpc(ulong childId, ulong parentId)
-    {
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(childId, out NetworkObject childObj) &&
-            NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(parentId, out NetworkObject parentObj))
-        {
-            if (childObj.transform.parent != parentObj.transform)
-            {
-                childObj.transform.SetParent(parentObj.transform);
-                Debug.Log($"Client: Force reparented {childObj.name} under {parentObj.name}");
-            }
-        }
-    }
-
-    
-    [ServerRpc(RequireOwnership = false)]
-    private void RequestSpawnServerRpc(ulong objId)
-    {
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(objId, out var obj))
-        {
-            obj.Spawn();
-        }
-    }
-    [ServerRpc]
-    private void RequestSpawnCameraServerRpc()
-    {
-        camFollow.GetComponent<NetworkObject>().Spawn();
-        handTransform.gameObject.GetComponent<NetworkObject>().Spawn();
-    }
-} 
+}

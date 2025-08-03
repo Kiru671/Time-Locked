@@ -78,6 +78,20 @@ public class PlayerInventory : MonoBehaviour
         Debug.Log("========================================");
     }
 
+    [ContextMenu("Debug Inventory State")]
+    public void DebugInventoryState()
+    {
+        Debug.Log("=== INVENTORY DEBUG ===");
+        Debug.Log($"Can add item: {inventorySystem.CanAddItem()}");
+    
+        for (int i = 0; i < inventorySystem.slots.Length; i++)
+        {
+            string status = inventorySystem.slots[i] == null ? "EMPTY" : inventorySystem.slots[i].itemName;
+            Debug.Log($"Slot {i}: {status}");
+        }
+        Debug.Log("=====================");
+    }
+    
     private void HandleSlotInput()
     {
         for (int i = 0; i < slotKeys.Length; i++)
@@ -154,6 +168,7 @@ public class PlayerInventory : MonoBehaviour
         TakeItemFromSlot(slotIndex);
     }
 
+    // In PlayerInventory.cs
     public void TakeItemFromSlot(int slotIndex)
     {
         if (!inventorySystem.IsSlotAvailable(slotIndex))
@@ -164,23 +179,31 @@ public class PlayerInventory : MonoBehaviour
         InventoryItemData item = inventorySystem.TakeItemFromSlot(slotIndex);
         if (item != null)
         {
-            // Dünya objesini al
             GameObject worldObject = null;
             if (slotWorldObjects.ContainsKey(slotIndex))
             {
                 worldObject = slotWorldObjects[slotIndex];
+            
+                // Add client-side validation
+                if (worldObject != null)
+                {
+                    NetworkObject netObj = worldObject.GetComponent<NetworkObject>();
+                    if (netObj != null && !netObj.IsSpawned)
+                    {
+                        Debug.LogWarning("Item NetworkObject is not spawned! Requesting spawn...");
+                        worldObject.SetActive(true);
+                        netObj.Spawn(true);
+                    }
+                }
             }
 
             if (heldItemManager.TakeItem(item, slotIndex, worldObject))
             {
                 uiController.RefreshUI(inventorySystem, heldItemManager);
-                
-                // Pulse efekti ekle
                 uiController.PulseHeldSlot();
             }
             else
             {
-                // Eşyayı alınamazsa geri koy
                 inventorySystem.PutItemBackToSlot(item, slotIndex);
             }
         }
