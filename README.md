@@ -198,7 +198,7 @@ Shorter times between task updates were agreed upon, with at least two status up
 
 # 3rd Sprint
 
-- *Total story points for tasks in the first sprint is*: 76 points.
+- *Total story points for tasks in the third sprint is*: 76 points.
 - *Method of Estimation*: Estimated how long each task would take in hours by talking to person associated with the task, then gave them points based on the fibonacci sequence (1-2-3-5-8...).
 
 
