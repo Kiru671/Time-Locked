@@ -106,15 +106,42 @@ public class ChessPieceController : MonoBehaviour
                 // Cooldown aktif
             }
         }
-    }
-    
-    void CheckForMove()
+    }    void CheckForMove()
     {
+        Debug.Log("=== CheckForMove başladı ===");
+        
+        // Kamera kontrolü
+        if (chessCamera == null)
+        {
+            Debug.LogError("Chess kamera bulunamadı!");
+            return;
+        }
+        
         Ray ray = chessCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
+        
+        // Raycast parametreleri
+        float maxDistance = 100f;
+        LayerMask layerMask = LayerMask.GetMask("BoardTrigger", "Tile"); // Tüm layerlar
+
+        RaycastHit[] hits = Physics.RaycastAll(ray, maxDistance, layerMask);
+        
+        Debug.Log($"Kamera: {chessCamera.name}");
+        Debug.Log($"Mouse pozisyonu: {Input.mousePosition}");
+        Debug.Log($"Ray origin: {ray.origin}");
+        Debug.Log($"Ray direction: {ray.direction}");
+        Debug.Log($"Toplam {hits.Length} objeye çarptı");
         
         if (hits.Length > 0)
         {
+            // Tüm hit'leri mesafeye göre sırala
+            System.Array.Sort(hits, (x, y) => x.distance.CompareTo(y.distance));
+            
+            // Tüm hit'leri listele
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Debug.Log($"Hit #{i}: {hits[i].collider.name}, Tag: {hits[i].collider.tag}, Distance: {hits[i].distance:F2}, Layer: {hits[i].collider.gameObject.layer}");
+            }
+            
             // Sadece Tile tag'ine sahip objeleri filtrele
             List<RaycastHit> tileHits = new List<RaycastHit>();
             
@@ -124,6 +151,11 @@ public class ChessPieceController : MonoBehaviour
                 if (hit.collider.CompareTag("Tile") && hit.collider.gameObject != this.gameObject)
                 {
                     tileHits.Add(hit);
+                    Debug.Log($"✓ Tile hit kabul edildi: {hit.collider.name}");
+                }
+                else
+                {
+                    Debug.Log($"✗ Tile hit reddedildi: {hit.collider.name} (Tag: {hit.collider.tag}, Bu taş mı: {hit.collider.gameObject == this.gameObject})");
                 }
             }
             
@@ -143,35 +175,114 @@ public class ChessPieceController : MonoBehaviour
                 }
                 
                 string targetPosition = closestTileHit.collider.gameObject.name;
+                Debug.Log($"Seçilen hedef kare: {targetPosition}");
                 
                 // Bu kare geçerli bir hamle mi kontrol et
                 if (validMoves.Contains(targetPosition))
                 {
+                    Debug.Log($"✓ Geçerli hamle: {currentPosition} -> {targetPosition}");
+                    
                     // Puzzle manager'dan hamle doğruluğunu kontrol et
                     if (puzzleManager != null && !puzzleManager.ValidateMove(currentPosition, targetPosition, pieceColor))
                     {
+                        Debug.Log("✗ Puzzle manager tarafından reddedildi");
                         // Yanlış hamle - taşı geri döndür
                         if (puzzleManager != null)
                             puzzleManager.OnWrongMove(this);
                         return;
                     }
                     
+                    Debug.Log("✓ Puzzle manager onayladı, hamle yapılıyor...");
                     MoveTo(targetPosition, closestTileHit.collider.transform.position);
                 }
                 else
                 {
+                    Debug.Log($"✗ Geçersiz hamle: {targetPosition} (Geçerli olanlar: {string.Join(", ", validMoves)})");
                     DeselectPiece();
                 }
             }
             else
             {
+                Debug.Log("✗ Hiçbir geçerli Tile bulunamadı");
                 DeselectPiece();
             }
         }
         else
         {
+            Debug.Log("✗ Raycast hiçbir şeye çarpmadı - Alternatif yöntem deneniyor...");
+            
+            // Alternatif yöntem: Daha kısa mesafe ve tek raycast
+            if (Physics.Raycast(ray, out RaycastHit singleHit, 50f))
+            {
+                Debug.Log($"Alternatif raycast çarptı: {singleHit.collider.name}, Tag: {singleHit.collider.tag}");
+                
+                if (singleHit.collider.CompareTag("Tile"))
+                {
+                    string targetPosition = singleHit.collider.gameObject.name;
+                    Debug.Log($"Alternatif yöntemle hedef: {targetPosition}");
+                    
+                    if (validMoves.Contains(targetPosition))
+                    {
+                        Debug.Log($"✓ Alternatif yöntemle geçerli hamle: {currentPosition} -> {targetPosition}");
+                        
+                        if (puzzleManager != null && !puzzleManager.ValidateMove(currentPosition, targetPosition, pieceColor))
+                        {
+                            Debug.Log("✗ Alternatif yöntem - Puzzle manager reddetti");
+                            if (puzzleManager != null)
+                                puzzleManager.OnWrongMove(this);
+                            return;
+                        }
+                        
+                        MoveTo(targetPosition, singleHit.collider.transform.position);
+                        return;
+                    }
+                }
+            }
+            
+            // Son çare: Mouse pozisyonuna en yakın tile'ı bul
+            Debug.Log("Son çare: En yakın tile aranıyor...");
+            GameObject[] allTiles = GameObject.FindGameObjectsWithTag("Tile");
+            GameObject closestTile = null;
+            float minScreenDistance = float.MaxValue;
+            
+            foreach (GameObject tile in allTiles)
+            {
+                Vector3 screenPos = chessCamera.WorldToScreenPoint(tile.transform.position);
+                float screenDistance = Vector2.Distance(Input.mousePosition, new Vector2(screenPos.x, screenPos.y));
+                
+                if (screenDistance < minScreenDistance)
+                {
+                    minScreenDistance = screenDistance;
+                    closestTile = tile;
+                }
+            }
+            
+            if (closestTile != null && minScreenDistance < 100f) // 100 pixel tolerans
+            {
+                string targetPosition = closestTile.name;
+                Debug.Log($"En yakın tile bulundu: {targetPosition}, Mesafe: {minScreenDistance:F1}px");
+                
+                if (validMoves.Contains(targetPosition))
+                {
+                    Debug.Log($"✓ En yakın tile yöntemiyle geçerli hamle: {currentPosition} -> {targetPosition}");
+                    
+                    if (puzzleManager != null && !puzzleManager.ValidateMove(currentPosition, targetPosition, pieceColor))
+                    {
+                        Debug.Log("✗ En yakın tile yöntemi - Puzzle manager reddetti");
+                        if (puzzleManager != null)
+                            puzzleManager.OnWrongMove(this);
+                        return;
+                    }
+                    
+                    MoveTo(targetPosition, closestTile.transform.position);
+                    return;
+                }
+            }
+            
             DeselectPiece();
         }
+        
+        Debug.Log("=== CheckForMove bitti ===");
     }
     
     void SelectPiece()
@@ -237,6 +348,8 @@ public class ChessPieceController : MonoBehaviour
     {
         validMoves.Clear();
         
+        Debug.Log($"=== {pieceType} ({pieceColor}) at {currentPosition} hamle hesaplaması ===");
+        
         switch (pieceType)
         {
             case PieceType.Pawn:
@@ -259,7 +372,7 @@ public class ChessPieceController : MonoBehaviour
                 break;
         }
         
-        // CalculateValidMoves sonucu log kaldırıldı
+        Debug.Log($"=== SONUÇ: {pieceType} için {validMoves.Count} geçerli hamle: {string.Join(", ", validMoves)} ===");
     }
     
     void CalculatePawnMoves()
@@ -419,15 +532,23 @@ public class ChessPieceController : MonoBehaviour
         }
     }
     
-    void CalculateQueenMoves()
-    {
-        // Vezir = Kale + Fil
-        CalculateRookMoves();
-        List<string> rookMoves = new List<string>(validMoves);
-        validMoves.Clear();
-        CalculateBishopMoves();
-        validMoves.AddRange(rookMoves);
-    }
+   void CalculateQueenMoves()
+{
+    if (boardManager == null) return;
+
+    List<string> allMoves = new List<string>();
+
+    CalculateRookMoves();
+    allMoves.AddRange(validMoves);
+
+    validMoves.Clear();
+
+    CalculateBishopMoves();
+    allMoves.AddRange(validMoves);
+
+    validMoves = allMoves;
+}
+
     
     void CalculateKingMoves()
     {
@@ -435,6 +556,8 @@ public class ChessPieceController : MonoBehaviour
         
         int file = currentPosition[0] - 'a';
         int rank = int.Parse(currentPosition[1].ToString()) - 1;
+        
+        Debug.Log($"Şah {currentPosition} için hamle hesaplama: file={file}, rank={rank}");
         
         // 8 yön (1 kare)
         for (int fileOffset = -1; fileOffset <= 1; fileOffset++)
@@ -445,18 +568,29 @@ public class ChessPieceController : MonoBehaviour
                 
                 int newFile = file + fileOffset;
                 int newRank = rank + rankOffset;
-                
+
                 if (newFile >= 0 && newFile <= 7 && newRank >= 0 && newRank <= 7)
                 {
                     string targetSquare = $"{(char)('a' + newFile)}{newRank + 1}";
-                    
+
                     if (!boardManager.IsSquareOccupiedBySameColor(targetSquare, pieceColor))
                     {
                         validMoves.Add(targetSquare);
+                        Debug.Log($"Şah geçerli hamle eklendi: {targetSquare}");
                     }
+                    else
+                    {
+                        Debug.Log($"Şah kendi taşı var: {targetSquare}");
+                    }
+                }
+                else
+                {
+                    Debug.Log($"Şah tahtadan çıkıyor: file={newFile}, rank={newRank}");
                 }
             }
         }
+        
+        Debug.Log($"Şah toplam {validMoves.Count} geçerli hamle: {string.Join(", ", validMoves)}");
     }
     
     System.Collections.IEnumerator SmoothMove(Vector3 from, Vector3 to, float duration, System.Action onComplete = null)

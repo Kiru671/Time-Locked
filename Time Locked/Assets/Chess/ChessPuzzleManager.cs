@@ -1,36 +1,31 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
-
-[System.Serializable]
-public class PuzzleMove
-{
-    public string from;
-    public string to;
-    public string description;
-}
-
-[System.Serializable]
-public class PuzzleLine
-{
-    public List<PuzzleMove> moves = new List<PuzzleMove>();
-    public string description;
-}
+using System.Collections.Generic;
 
 public class ChessPuzzleManager : MonoBehaviour
 {
-    [Header("Puzzle Settings")]
-    public bool isWhiteTurn = true;
-    public bool puzzleCompleted = false;
+    [System.Serializable]
+    public class PuzzleMove
+    {
+        public string from;
+        public string to;
+        public string description;
+    }
 
-    [Header("Puzzle Lines")]
+    [System.Serializable]
+    public class PuzzleLine
+    {
+        public List<PuzzleMove> moves = new List<PuzzleMove>();
+        public string description;
+    }
+
     public List<PuzzleLine> puzzleLines = new List<PuzzleLine>();
 
-    private ChessBoardManager boardManager;
     private int currentMoveIndex = 0;
-    private PuzzleLine currentLine = null;
-    private bool waitingForPlayerMove = true;
-    private string lastBlackMove = "";
+    private PuzzleLine currentLine;
+    private bool isWhiteTurn = true;
+
+    private ChessBoardManager boardManager;
 
     void Start()
     {
@@ -43,277 +38,74 @@ public class ChessPuzzleManager : MonoBehaviour
         puzzleLines.Clear();
 
         PuzzleLine mainLine = new PuzzleLine();
-        mainLine.description = "Main Line: 1. Se4";
+        mainLine.description = "Mate in 3";
+        mainLine.moves = new List<PuzzleMove>()
+        {
+            new PuzzleMove { from = "f5", to = "e4", description = "1. Şe4!" },
+            new PuzzleMove { from = "d6", to = "f4", description = "1... Fxf4" },
+            new PuzzleMove { from = "c4", to = "d6", description = "2. Ad6" },
+            new PuzzleMove { from = "d6", to = "d6", description = "2... Fxd6" },
+            new PuzzleMove { from = "g4", to = "d7", description = "3. Vxd7#" },
+        };
+
+
         puzzleLines.Add(mainLine);
-
-        Debug.Log("Puzzle setup complete. White to move!");
-        Debug.Log("Find mate in 3 moves starting with Se4!");
+        currentLine = puzzleLines[0];
+        currentMoveIndex = 0;
+        isWhiteTurn = true;
     }
 
-    public bool ValidateMove(string fromPosition, string toPosition, PieceColor pieceColor)
+    public bool ValidateMove(string from, string to, PieceColor color)
     {
-        Debug.Log($"Hamle kabul edildi: {fromPosition} -> {toPosition} ({pieceColor})");
-        return true;
-    }
-
-    bool ValidateWhiteMove(string fromPosition, string toPosition)
-    {
-        if (currentMoveIndex == 0)
-        {
-            if (fromPosition == "f5" && toPosition == "e4")
-            {
-                Debug.Log("✓ Doğru! 1. Se4 oynandı.");
-                return true;
-            }
-            else
-            {
-                Debug.Log("✗ Yanlış hamle! İlk hamle 1. Se4 olmalı.");
-                Debug.Log("İpucu: Şahı f5'ten e4'e taşı!");
-                return false;
-            }
-        }
-
-        else if (currentMoveIndex == 2)
-        {
-            switch (lastBlackMove)
-            {
-                case "Bd6xf4":
-                    if (fromPosition == "c4" && toPosition == "d6")
-                    {
-                        Debug.Log("✓ Doğru! 2. Ad6 oynandı.");
-                        return true;
-                    }
-                    break;
-
-                case "Ka4-b5":
-                    if (fromPosition == "g4" && toPosition == "d7")
-                    {
-                        Debug.Log("✓ Doğru! 2. Vxd7+ oynandı.");
-                        return true;
-                    }
-                    break;
-
-                case "Ka4-b3":
-                    if (fromPosition == "g4" && toPosition == "e2")
-                    {
-                        Debug.Log("✓ Doğru! 2. Ve2 oynandı.");
-                        return true;
-                    }
-                    break;
-
-                default:
-                    Debug.Log($"⚠ Siyahın hamlesi bilinmiyor: {lastBlackMove}");
-                    return true;
-            }
-
-            Debug.Log("✗ Yanlış ikinci hamle!");
+        if (currentLine == null || currentMoveIndex >= currentLine.moves.Count)
             return false;
-        }
 
-        else if (currentMoveIndex == 4)
+        PuzzleMove expected = currentLine.moves[currentMoveIndex];
+
+        if (from == expected.from && to == expected.to &&
+            ((isWhiteTurn && color == PieceColor.White) || (!isWhiteTurn && color == PieceColor.Black)))
         {
-            switch (lastBlackMove)
-            {
-                case "Bd6xf4":
-                    if (fromPosition == "g4" && (toPosition == "d1" || toPosition == "d7"))
-                    {
-                        Debug.Log("✓ Mat hamlesi! 3. Vd1# veya Vxd7#");
-                        return true;
-                    }
-                    break;
-
-                case "Ka4-b5":
-                    if (fromPosition == "d7" && (toPosition == "c6" || toPosition == "b7"))
-                    {
-                        Debug.Log("✓ Mat hamlesi! 3. Vc6# veya Vb7#");
-                        return true;
-                    }
-                    break;
-
-                case "Ka4-b3":
-                    if ((fromPosition == "c4" && (toPosition == "b2" || toPosition == "b6")))
-                    {
-                        Debug.Log("✓ Mat hamlesi! 3. Ab2# veya Ab6#");
-                        return true;
-                    }
-                    else if (fromPosition == "g4" && toPosition == "e2")
-                    {
-                        Debug.Log("İkinci hamle Ve2 oynanmıştı zaten.");
-                        return false;
-                    }
-                    break;
-
-                default:
-                    Debug.Log("⚠ Siyahın hamlesine uygun mat hamlesi tanımlanmadı.");
-                    return true;
-            }
-
-            Debug.Log("✗ Yanlış mat hamlesi!");
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
-    public void OnMoveExecuted(string fromPosition, string toPosition, PieceColor pieceColor)
+    public void OnMoveExecuted(string from, string to, PieceColor color)
     {
-        if (puzzleCompleted) return;
+        Debug.Log($"Hamle kabul edildi: {from} -> {to} ({color})");
 
         currentMoveIndex++;
+        isWhiteTurn = !isWhiteTurn;
 
-        Debug.Log($"Hamle kaydedildi: {fromPosition} -> {toPosition} ({pieceColor})");
         Debug.Log($"Toplam hamle sayısı: {currentMoveIndex}");
 
-        // Otomatik siyah hamle şimdilik kapalı
-        /*
-        if (isWhiteTurn)
+        if (!isWhiteTurn && currentMoveIndex < currentLine.moves.Count)
         {
-            isWhiteTurn = false;
-            StartCoroutine(PlayBlackMoveAfterDelay(1.0f));
+            StartCoroutine(PerformBlackMove());
+        }
+    }
+
+    IEnumerator PerformBlackMove()
+    {
+        yield return new WaitForSeconds(0.8f);
+
+        PuzzleMove move = currentLine.moves[currentMoveIndex];
+        ChessPieceController piece = boardManager.GetPieceAt(move.from);
+
+        if (piece != null && piece.pieceColor == PieceColor.Black)
+        {
+            piece.AutoMoveTo(move.to);
         }
         else
         {
-            isWhiteTurn = true;
-            waitingForPlayerMove = true;
-        }
-        */
-
-        CheckForMate();
-    }
-
-    IEnumerator PlayBlackMoveAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        PlayBlackMove();
-    }
-
-    void PlayBlackMove()
-    {
-        Debug.Log(">>> PlayBlackMove çağrıldı <<<");
-
-        string[] possibleBlackMoves = GetPossibleBlackResponses();
-
-        Debug.Log($"Olası siyah hamleler: {possibleBlackMoves.Length} adet");
-
-        if (possibleBlackMoves.Length > 0)
-        {
-            string selectedMove = possibleBlackMoves[Random.Range(0, possibleBlackMoves.Length)];
-            Debug.Log($"Seçilen siyah hamle: {selectedMove}");
-
-            string[] moveParts = selectedMove.Split('-');
-
-            if (moveParts.Length == 2)
-            {
-                Debug.Log($"Hamle ayrıştırıldı: {moveParts[0]} -> {moveParts[1]}");
-                ExecuteAutoMove(moveParts[0], moveParts[1], PieceColor.Black);
-            }
-            else
-            {
-                Debug.LogError($"Hamle formatı hatalı: {selectedMove}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Siyah için hamle bulunamadı!");
-        }
-    }
-
-    string[] GetPossibleBlackResponses()
-    {
-        Debug.Log($"GetPossibleBlackResponses çağrıldı. currentMoveIndex: {currentMoveIndex}");
-
-        switch (currentMoveIndex)
-        {
-            case 1:
-                Debug.Log("Siyah için 1. hamle sonrası cevaplar hazırlanıyor...");
-                return new string[] {
-                    "d6-f4",
-                    "a4-b5",
-                    "a4-b3"
-                };
-
-            case 3:
-                Debug.Log("Siyah için 2. hamle sonrası cevaplar hazırlanıyor...");
-                return new string[] {
-                    "b5-c5",
-                    "b5-a6",
-                    "b3-a2",
-                    "f4-e3"
-                };
-
-            default:
-                Debug.Log("Bu hamle için siyah cevabı tanımlanmamış");
-                return new string[0];
-        }
-    }
-
-    void ExecuteMove(string fromPosition, string toPosition)
-    {
-        // Hamleyi board manager'a bildir
-    }
-
-    void ExecuteAutoMove(string fromPosition, string toPosition, PieceColor color)
-    {
-        Debug.Log($">>> ExecuteAutoMove: {fromPosition} -> {toPosition} ({color}) <<<");
-
-        if (boardManager != null)
-        {
-            ChessPieceController piece = boardManager.GetPieceAt(fromPosition);
-            if (piece != null && piece.pieceColor == color)
-            {
-                Debug.Log($"✓ Taş bulundu: {piece.pieceType} ({piece.pieceColor}) at {fromPosition}");
-                piece.AutoMoveTo(toPosition);
-                lastBlackMove = $"{fromPosition}-{toPosition}";
-            }
-            else
-            {
-                if (piece == null)
-                    Debug.LogError($"✗ {fromPosition} pozisyonunda taş bulunamadı!");
-                else
-                    Debug.LogError($"✗ Taş rengi uyuşmuyor! Beklenen: {color}, Bulunan: {piece.pieceColor}");
-            }
-        }
-        else
-        {
-            Debug.LogError("✗ BoardManager bulunamadı!");
-        }
-    }
-
-    void CheckForMate()
-    {
-        if (currentMoveIndex >= 6)
-        {
-            Debug.Log("Puzzle tamamlandı! Mat!");
-            puzzleCompleted = true;
+            Debug.LogError("Siyah taş bulunamadı veya renk uyumsuzluğu: " + move.from);
         }
     }
 
     public void OnWrongMove(ChessPieceController piece)
     {
-        Debug.Log("Yanlış hamle! Taş geri döndürülüyor.");
+        Debug.Log("Yanlış hamle, taş geri dönüyor.");
         piece.ReturnToOriginalPosition();
-    }
-
-    [ContextMenu("Reset Puzzle")]
-    public void ResetPuzzle()
-    {
-        currentMoveIndex = 0;
-        isWhiteTurn = true;
-        puzzleCompleted = false;
-        waitingForPlayerMove = true;
-        Debug.Log("Puzzle sıfırlandı!");
-    }
-
-    [ContextMenu("Show Hint")]
-    public void ShowHint()
-    {
-        if (currentMoveIndex == 0)
-        {
-            Debug.Log("İpucu: Se4 oyna!");
-        }
-        else
-        {
-            Debug.Log("İpucu: Puzzle hatlarını takip et!");
-        }
     }
 }
