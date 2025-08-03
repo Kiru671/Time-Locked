@@ -158,7 +158,7 @@ We decided to be more careful updating the next task backlog and not underestima
 <details> <summary><h3>Product Progress Screenshots:</h3></summary>
   
   ![Screenshot 1](Readme_Images/piano.jpg)
-  ![Screenshot 2](Readme_Images/ses.jpeg) 
+  ![Screenshot 2](Readme_Images/ses.jpg) 
   ![Screenshot 3](Readme_Images/not.jpg)
   ![Screenshot 4](Readme_Images/wp_room.jpg)
   ![Screenshot 5](Readme_Images/wp_room_2.jpg)
@@ -210,9 +210,8 @@ Shorter times between task updates were agreed upon, with at least two status up
   ![Screenshot 4](Readme_Images/chattttt.png) 
   ![Screenshot 2](Readme_Images/chatt.png)
   ![Screenshot 3](Readme_Images/chattt.png) 
-  ![Screenshot 4](Readme_Images/chatttt.png) 
+  ![Screenshot 5](Readme_Images/chatttt.png) 
   
-
 
 </details>
 
@@ -222,10 +221,10 @@ Shorter times between task updates were agreed upon, with at least two status up
 <details> <summary><h3>Product Progress Screenshots:</h3></summary>
   
   ![Alt Text](Readme_Images/Ambiance%20TimeLocked.gif)
-  ![Screenshot 1](Readme_Images/chess.png)
-  ![Screenshot 2](Readme_Images/clock.png)
-  ![Screenshot 3](Readme_Images/Firebase.png) 
-  ![Screenshot 4](Readme_Images/chatttt.png) 
+  ![SS1](Readme_Images/chess.jpg)
+  ![SS2](Readme_Images/clock.jpg)
+  ![SS3](Readme_Images/Firebase.jpg) 
+  ![SS5](Readme_Images/chatttt.png) 
 
 
   * **Story & Puzzle Progression Notes**: 
@@ -238,9 +237,17 @@ Shorter times between task updates were agreed upon, with at least two status up
   </details>
 
   * **Sprint Review:**
+
+
 Team acknowledged that we were far frmo giving it our all after the middle of the 2nd sprint. This unfortunately continued until the end of this sprint.
+
+
 Many puzzles and content for the game was created however, so there is a lot of unrealized potential, we all agreed.
+
+
 We were off by 26 points, having completed 50 out of 76 that was our goal for sprint 3.
+
+
 Sprint review attendees: Kerem Yıldız, Arif Dağ, Sevde Nur Taşkın.
 
 **Sprint retrospective**
