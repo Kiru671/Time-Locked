@@ -174,21 +174,21 @@ public class ItemInteraction : NetworkBehaviour, IInteractable
             return;
         }
 
-        Debug.Log($"[SERVER] Found player object: {playerObj.name}");
+// DEBUG - Find all PlayerInventory components
+        PlayerInventory[] allInventories = FindObjectsOfType<PlayerInventory>();
+        Debug.Log($"[SERVER] Found {allInventories.Length} PlayerInventory components total");
 
-        var playerInventory = playerObj.GetComponentInChildren<PlayerInventory>();
-        if (playerInventory == null)
+        foreach (var inv in allInventories)
         {
-            Debug.LogError("[SERVER] PlayerInventory component not found!");
-            
-            // Try to find it differently
-            playerInventory = playerObj.GetComponent<PlayerInventory>();
-            if (playerInventory == null)
-            {
-                Debug.LogError("[SERVER] PlayerInventory not found with GetComponent either!");
-                return;
-            }
+            Debug.Log($"[SERVER] PlayerInventory on: {inv.gameObject.name}, Owner: {inv.GetComponent<NetworkObject>()?.OwnerClientId}");
         }
+
+// Try different search methods
+        var playerInventory = playerObj.GetComponent<PlayerInventory>();
+        if (playerInventory == null)
+            playerInventory = playerObj.GetComponentInChildren<PlayerInventory>();
+        if (playerInventory == null)
+            playerInventory = playerObj.GetComponentInParent<PlayerInventory>();
 
         Debug.Log($"[SERVER] Found PlayerInventory");
         Debug.Log($"[SERVER] Inventory system null check: {playerInventory.inventorySystem == null}");
