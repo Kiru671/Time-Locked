@@ -50,29 +50,17 @@ public class ChessPieceController : MonoBehaviour
     void Start()
     {
         originalPosition = transform.position;
-        
-        // Chess kamerasını bul
-        GameObject chessCamObj = GameObject.Find("chessCamera");
-        if (chessCamObj != null)
-            chessCamera = chessCamObj.GetComponent<Camera>();
-        else
-            chessCamera = Camera.main;
-            
-        // Kamera kontrolü
-        if (chessCamera == null)
-        {
-            Debug.LogError("Kamera bulunamadı! Chess camera veya main camera gerekli.");
-            chessCamera = FindObjectOfType<Camera>(); // Herhangi bir kamera al
-        }
-        
-        Debug.Log($"Taş {gameObject.name} kamera olarak {chessCamera.name} kullanıyor");
-            
+
+        // Başlangıçta Main Camera kullan - kamera geçişi sonrası RefreshCamera çağrılacak
+        chessCamera = Camera.main;
+        Debug.Log($"Taş {gameObject.name} başlangıçta {chessCamera?.name} kullanıyor");
+
         // Board manager'ı bul
         boardManager = FindObjectOfType<ChessBoardManager>();
-        
+
         // Puzzle manager'ı bul
         puzzleManager = FindObjectOfType<ChessPuzzleManager>();
-        
+
         // Bu taşın pozisyonunu board manager'a kaydet
         if (boardManager != null)
             boardManager.RegisterPiece(this, currentPosition);
@@ -109,8 +97,14 @@ public class ChessPieceController : MonoBehaviour
     }    void CheckForMove()
     {
         Debug.Log("=== CheckForMove başladı ===");
-        
-        // Kamera kontrolü
+
+        // Kamera kontrolü - eğer null ise tekrar bul
+        if (chessCamera == null)
+        {
+            Debug.LogWarning("Chess kamera null, tekrar aranıyor...");
+            FindChessCamera();
+        }
+
         if (chessCamera == null)
         {
             Debug.LogError("Chess kamera bulunamadı!");
@@ -121,7 +115,8 @@ public class ChessPieceController : MonoBehaviour
         
         // Raycast parametreleri
         float maxDistance = 100f;
-        LayerMask layerMask = LayerMask.GetMask("BoardTrigger", "Tile"); // Tüm layerlar
+        // Tile layer'ı ve Default layer'ını hedefle
+        LayerMask layerMask = LayerMask.GetMask("Tile", "Default");
 
         RaycastHit[] hits = Physics.RaycastAll(ray, maxDistance, layerMask);
         
@@ -129,6 +124,7 @@ public class ChessPieceController : MonoBehaviour
         Debug.Log($"Mouse pozisyonu: {Input.mousePosition}");
         Debug.Log($"Ray origin: {ray.origin}");
         Debug.Log($"Ray direction: {ray.direction}");
+        Debug.Log($"LayerMask: {layerMask.value}");
         Debug.Log($"Toplam {hits.Length} objeye çarptı");
         
         if (hits.Length > 0)
@@ -211,8 +207,8 @@ public class ChessPieceController : MonoBehaviour
         {
             Debug.Log("✗ Raycast hiçbir şeye çarpmadı - Alternatif yöntem deneniyor...");
             
-            // Alternatif yöntem: Daha kısa mesafe ve tek raycast
-            if (Physics.Raycast(ray, out RaycastHit singleHit, 50f))
+            // Alternatif yöntem: Daha kısa mesafe ve tek raycast (tüm layer'lar)
+            if (Physics.Raycast(ray, out RaycastHit singleHit, 50f, ~0))
             {
                 Debug.Log($"Alternatif raycast çarptı: {singleHit.collider.name}, Tag: {singleHit.collider.tag}");
                 
@@ -283,6 +279,64 @@ public class ChessPieceController : MonoBehaviour
         }
         
         Debug.Log("=== CheckForMove bitti ===");
+    }
+
+    void FindChessCamera()
+    {
+        // Önce aktif kameraları kontrol et
+        Camera[] allCameras = FindObjectsOfType<Camera>();
+
+        foreach (Camera cam in allCameras)
+        {
+            if (cam.gameObject.name.ToLower().Contains("chess") && cam.gameObject.activeInHierarchy)
+            {
+                chessCamera = cam;
+                Debug.Log($"Aktif chess kamera bulundu: {cam.name}");
+                return;
+            }
+        }
+
+        // Eğer aktif chess kamera bulunamazsa, pasif olanları da kontrol et
+        foreach (Camera cam in allCameras)
+        {
+            if (cam.gameObject.name.ToLower().Contains("chess"))
+            {
+                chessCamera = cam;
+                Debug.Log($"Pasif chess kamera bulundu: {cam.name}");
+                return;
+            }
+        }
+
+        // Son çare olarak Main Camera kullan
+        chessCamera = Camera.main;
+        Debug.LogWarning($"Chess kamera bulunamadı, Main Camera kullanılıyor: {chessCamera?.name}");
+    }
+
+    public void RefreshCamera()
+    {
+        Camera oldCamera = chessCamera;
+        FindChessCamera();
+
+        if (chessCamera != null)
+        {
+            Debug.Log($"✓ Taş {gameObject.name} kamera yenilendi: {oldCamera?.name} -> {chessCamera.name}");
+        }
+        else
+        {
+            Debug.LogError($"✗ Taş {gameObject.name} kamera yenilenemedi!");
+        }
+    }
+
+    // Tüm taşların kameralarını yenile (static metod)
+    public static void RefreshAllCameras()
+    {
+        ChessPieceController[] allPieces = FindObjectsByType<ChessPieceController>(FindObjectsSortMode.None);
+        Debug.Log($"Tüm taşların kameraları yenileniyor: {allPieces.Length} taş bulundu");
+
+        foreach (ChessPieceController piece in allPieces)
+        {
+            piece.RefreshCamera();
+        }
     }
     
     void SelectPiece()
@@ -471,10 +525,12 @@ public class ChessPieceController : MonoBehaviour
     void CalculateKnightMoves()
     {
         if (boardManager == null) return;
-        
+
         int file = currentPosition[0] - 'a';
         int rank = int.Parse(currentPosition[1].ToString()) - 1;
-        
+
+        Debug.Log($"At {currentPosition} için hamle hesaplama: file={file}, rank={rank}");
+
         // L şeklindeki 8 hamle
         int[,] knightMoves = {{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2}, {1,-2}, {-1,2}, {-1,-2}};
         
@@ -536,17 +592,21 @@ public class ChessPieceController : MonoBehaviour
 {
     if (boardManager == null) return;
 
+    Debug.Log($"Vezir {currentPosition} için hamle hesaplama başlıyor");
     List<string> allMoves = new List<string>();
 
     CalculateRookMoves();
+    Debug.Log($"Kale hamleler: {string.Join(", ", validMoves)}");
     allMoves.AddRange(validMoves);
 
     validMoves.Clear();
 
     CalculateBishopMoves();
+    Debug.Log($"Fil hamleler: {string.Join(", ", validMoves)}");
     allMoves.AddRange(validMoves);
 
     validMoves = allMoves;
+    Debug.Log($"Vezir toplam geçerli hamleler: {string.Join(", ", validMoves)}");
 }
 
     
@@ -632,12 +692,16 @@ public class ChessPieceController : MonoBehaviour
         boardManager.MovePiece(currentPosition, newPosition, this);
         
         currentPosition = newPosition;
-        originalPosition = new Vector3(targetSquare.transform.position.x, originalPosition.y, targetSquare.transform.position.z);
-        
-        Vector3 targetPos = originalPosition;
-        StartCoroutine(SmoothMove(transform.position, targetPos, 0.8f, () => {
+
+        // Yeni pozisyonu hesapla
+        Vector3 newTargetPos = new Vector3(targetSquare.transform.position.x, targetSquare.transform.position.y, targetSquare.transform.position.z);
+
+        // ÖNCE hareket et, SONRA originalPosition'ı güncelle
+        StartCoroutine(SmoothMove(transform.position, newTargetPos, 0.8f, () => {
+            // Hamle tamamlandıktan SONRA originalPosition'ı güncelle
+            originalPosition = newTargetPos;
             isMoving = false;
-            
+
             // Puzzle manager'a hamleyi bildir
             if (puzzleManager != null)
                 puzzleManager.OnMoveExecuted(oldPosition, newPosition, pieceColor);

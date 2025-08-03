@@ -41,9 +41,12 @@ public class GameStarter : MonoBehaviour
                     Cursor.visible = true;
 
                     gameStarted = true;
-                    
+
                     Debug.Log("Satranç oyunu başladı!");
-                    
+
+                    // Tüm taşlara kameralarını yeniden bulmaları için haber ver
+                    ChessPieceController.RefreshAllCameras();
+
                     // Board manager'da oyunu başlat
                     if (boardManager != null)
                     {
@@ -60,4 +63,6 @@ public class GameStarter : MonoBehaviour
             Cursor.visible = true;
         }
     }
+
+
 }
