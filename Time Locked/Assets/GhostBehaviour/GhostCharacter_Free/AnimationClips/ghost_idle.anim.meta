@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2c01f85ff72a3477ea14feee64280f31
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267003
+  packageName: Ghost character Free
+  packageVersion: 1.0
+  assetPath: Assets/GhostCharacter_Free/AnimationClips/ghost_idle.anim
+  uploadId: 617687

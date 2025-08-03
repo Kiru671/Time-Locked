@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f57bdc949fce340f8968c5bc86276031
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267003
+  packageName: Ghost character Free
+  packageVersion: 1.0
+  assetPath: Assets/GhostCharacter_Free/Scripts/GhostScript.cs
+  uploadId: 617687

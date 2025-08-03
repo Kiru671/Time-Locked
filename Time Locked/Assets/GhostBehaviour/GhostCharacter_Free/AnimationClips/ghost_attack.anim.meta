@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bdb5b47dd4fff45a89a80d4abe856294
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267003
+  packageName: Ghost character Free
+  packageVersion: 1.0
+  assetPath: Assets/GhostCharacter_Free/AnimationClips/ghost_attack.anim
+  uploadId: 617687

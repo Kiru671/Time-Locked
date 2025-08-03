@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 506ff7550b5114a6aa6d9a3396ff8e95
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 267003
+  packageName: Ghost character Free
+  packageVersion: 1.0
+  assetPath: Assets/GhostCharacter_Free/AnimationClips/ghost_dissolve.anim
+  uploadId: 617687
