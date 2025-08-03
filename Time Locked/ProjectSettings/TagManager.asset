@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - CinemachineTarget
+  - Piece
+  - Tile
   layers:
   - Default
   - TransparentFX
@@ -15,8 +17,8 @@ TagManager:
   - Interactable
   - Ground
   - Mirror
-  - 
-  - 
+  - BoardTrigger
+  - Tile
   - 
   - 
   - 
