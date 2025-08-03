@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1f664f9a675c7ff4689df5ab3302c58a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 262151
+  packageName: Keypad FREE
+  packageVersion: 1.0.1
+  assetPath: Assets/Keypad/Scripts/Keypad.cs
+  uploadId: 657263

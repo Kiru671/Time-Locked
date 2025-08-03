@@ -1,5 +1,10 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEngine.PlayerLoop;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -17,9 +22,28 @@ public class PlayerInventory : MonoBehaviour
     // Her slot için dünya objesini sakla
     private Dictionary<int, GameObject> slotWorldObjects = new Dictionary<int, GameObject>();
 
-    private void Start()
+    public static event Action<PlayerInventory> OnSpawned;
+
+    public void Initialize(InventoryUIController uiController)
     {
-        uiController = FindObjectOfType<InventoryUIController>();
+        this.uiController = uiController;
+        Debug.Log("Assigned UI Controller to PlayerInventory");
+    }
+
+    private IEnumerator Start()
+    {
+        // Wait until uiController is assigned
+        while (uiController == null)
+            yield return null;
+
+        
+        OnSpawned?.Invoke(this);
+        if(uiController == null)
+            uiController = FindObjectOfType<InventoryUIController>();
+        if (heldItemManager == null)
+            heldItemManager = GetComponent<HeldItemManager>();
+        if (inventorySystem == null)
+            inventorySystem = FindObjectOfType<InventorySystem>();
         
         // ItemInspector'ı otomatik bul
         if (itemInspector == null)
@@ -54,6 +78,20 @@ public class PlayerInventory : MonoBehaviour
         Debug.Log("========================================");
     }
 
+    [ContextMenu("Debug Inventory State")]
+    public void DebugInventoryState()
+    {
+        Debug.Log("=== INVENTORY DEBUG ===");
+        Debug.Log($"Can add item: {inventorySystem.CanAddItem()}");
+    
+        for (int i = 0; i < inventorySystem.slots.Length; i++)
+        {
+            string status = inventorySystem.slots[i] == null ? "EMPTY" : inventorySystem.slots[i].itemName;
+            Debug.Log($"Slot {i}: {status}");
+        }
+        Debug.Log("=====================");
+    }
+    
     private void HandleSlotInput()
     {
         for (int i = 0; i < slotKeys.Length; i++)
@@ -130,39 +168,43 @@ public class PlayerInventory : MonoBehaviour
         TakeItemFromSlot(slotIndex);
     }
 
+    // In PlayerInventory.cs
     public void TakeItemFromSlot(int slotIndex)
     {
         if (!inventorySystem.IsSlotAvailable(slotIndex))
         {
-            Debug.Log($"Slot {slotIndex + 1} is empty or unavailable");
             return;
         }
 
         InventoryItemData item = inventorySystem.TakeItemFromSlot(slotIndex);
         if (item != null)
         {
-            // Dünya objesini al
             GameObject worldObject = null;
             if (slotWorldObjects.ContainsKey(slotIndex))
             {
                 worldObject = slotWorldObjects[slotIndex];
+            
+                // Add client-side validation
+                if (worldObject != null)
+                {
+                    NetworkObject netObj = worldObject.GetComponent<NetworkObject>();
+                    if (netObj != null && !netObj.IsSpawned)
+                    {
+                        Debug.LogWarning("Item NetworkObject is not spawned! Requesting spawn...");
+                        worldObject.SetActive(true);
+                        netObj.Spawn(true);
+                    }
+                }
             }
 
             if (heldItemManager.TakeItem(item, slotIndex, worldObject))
             {
-                Debug.Log($"📦 Picked up {item.itemName} from slot {slotIndex + 1}");
-                Debug.Log($"💡 Use at interaction zones, press {slotIndex + 1} to put back, or Right-Click to cancel");
-                
                 uiController.RefreshUI(inventorySystem, heldItemManager);
-                
-                // Pulse efekti ekle
                 uiController.PulseHeldSlot();
             }
             else
             {
-                // Eşyayı alınamazsa geri koy
                 inventorySystem.PutItemBackToSlot(item, slotIndex);
-                Debug.Log("❌ Could not take item - hands are full");
             }
         }
     }
@@ -190,12 +232,10 @@ public class PlayerInventory : MonoBehaviour
     {
         if (!heldItemManager.IsHoldingItem)
         {
-            Debug.Log("💭 No item to cancel");
             return;
         }
 
         InventoryItemData cancelledItem = heldItemManager.CurrentHeldItem;
-        Debug.Log($"🚫 Cancelled carrying {cancelledItem.itemName}");
         
         PutBackHeldItem();
         
@@ -206,6 +246,7 @@ public class PlayerInventory : MonoBehaviour
     // Dünya objesi ile eşya ekleme (ItemInteraction'dan çağrılır)
     public bool TryAddItemWithWorldObject(InventoryItemData item, GameObject worldObject)
     {
+        
         if (inventorySystem.AddItem(item))
         {
             // Hangi slota eklediğini bul
@@ -226,12 +267,13 @@ public class PlayerInventory : MonoBehaviour
                 Debug.Log($"✅ Added {item.itemName} to slot {slotIndex + 1} with world object");
             }
 
-            uiController.RefreshUI(inventorySystem, heldItemManager);
+            if (uiController != null)
+                uiController.RefreshUI(inventorySystem, heldItemManager);
             return true;
         }
         else
         {
-            Debug.Log($"❌ Inventory full! Cannot add {item.itemName}");
+
             return false;
         }
     }
@@ -240,12 +282,7 @@ public class PlayerInventory : MonoBehaviour
     {
         if (inventorySystem.AddItem(item))
         {
-            Debug.Log($"✅ Added {item.itemName} to inventory");
             uiController.RefreshUI(inventorySystem, heldItemManager);
-        }
-        else
-        {
-            Debug.Log($"❌ Inventory full! Cannot add {item.itemName}");
         }
     }
 
@@ -270,7 +307,6 @@ public class PlayerInventory : MonoBehaviour
             slotWorldObjects.Remove(slotIndex);
         }
         
-        Debug.Log($"🗑️ Removed {itemName} from inventory");
         uiController.RefreshUI(inventorySystem, heldItemManager);
     }
 
@@ -281,7 +317,6 @@ public class PlayerInventory : MonoBehaviour
     {
         if (!heldItemManager.IsHoldingItem)
         {
-            Debug.Log("❌ No item in hand to use");
             return;
         }
 
@@ -302,7 +337,6 @@ public class PlayerInventory : MonoBehaviour
         heldItemManager.UseHeldItem();
         inventorySystem.ConsumeItemFromSlot(slotIndex);
         
-        Debug.Log($"✨ Used {usedItem.itemName} at interaction zone!");
         uiController.RefreshUI(inventorySystem, heldItemManager);
     }
 
@@ -411,8 +445,7 @@ public class PlayerInventory : MonoBehaviour
             Debug.Log($"❌ {heldItemManager.CurrentHeldItem.itemName} is not inspectable!");
             return;
         }
-
-        Debug.Log($"🎯 Starting inspection of held item: {heldItemManager.CurrentHeldItem.itemName}");
+        
         itemInspector.InspectItem(heldWorldObject);
     }
 }

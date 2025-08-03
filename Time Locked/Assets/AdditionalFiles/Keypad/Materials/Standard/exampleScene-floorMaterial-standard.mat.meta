@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0da15503245e91f46a9381aae3dd01fc
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 262151
+  packageName: Keypad FREE
+  packageVersion: 1.0.1
+  assetPath: Assets/Keypad/Materials/Standard/exampleScene-floorMaterial-standard.mat
+  uploadId: 657263

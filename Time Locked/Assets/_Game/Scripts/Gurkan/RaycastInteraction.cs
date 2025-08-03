@@ -1,6 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class RaycastInteraction : MonoBehaviour
+public class RaycastInteraction : NetworkBehaviour
 {
     public float interactionRange = 4f;
     public LayerMask interactionLayer;
@@ -8,8 +11,29 @@ public class RaycastInteraction : MonoBehaviour
     private Camera cam;
     private IInteractable currentInteractable;
     private Outline lastOutline;
+    private PlayerInventory playerInventory;
 
 
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            this.enabled = false;
+        }
+    }
+
+    private IEnumerator GetPlayerInventory(IInteractable interactable)
+    {
+        while(playerInventory == null)
+        {
+            playerInventory = GetComponent<PlayerInventory>();
+            if (playerInventory != null) break;
+            yield return new WaitForSeconds(0.1f);
+        }
+        interactable.Interact(playerInventory);
+        UIManager.Instance.HideHint();
+    }
+    
     private void Start()
     {
         cam = Camera.main;
@@ -17,6 +41,12 @@ public class RaycastInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (!IsLocalPlayer) return;
+        if (cam == null)
+        {
+            cam = Camera.main;
+            if (cam == null) return;
+        }
         
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactionLayer))
@@ -39,9 +69,8 @@ public class RaycastInteraction : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    var playerInventory = GetComponent<PlayerInventory>();
-                    interactable.Interact(playerInventory);
-                    UIManager.Instance.HideHint();
+                    Debug.Log("Pressed E");
+                    StartCoroutine(GetPlayerInventory(interactable));
                 }
             }
         }
@@ -52,8 +81,8 @@ public class RaycastInteraction : MonoBehaviour
             var interactable = mirrorHit.collider.GetComponent<Mirror>();
             if (Input.GetKeyDown(KeyCode.E))
             {
-                var playerInventory = GetComponent<PlayerInventory>();
-                interactable.SendItem(playerInventory.heldItemManager.currentHeldNetworkItem.NetworkObjectId);
+                var playerInventory = gameObject.GetComponent<PlayerInventory>();
+                interactable.SendItem(playerInventory.heldItemManager.currentHeldNetworkItem.NetworkObjectId, playerInventory);
                 UIManager.Instance.HideHint();
             }
         }

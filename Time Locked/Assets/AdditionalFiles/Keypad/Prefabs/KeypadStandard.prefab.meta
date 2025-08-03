@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b47bdf1669865c841ace96330ee3d7ec
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 262151
+  packageName: Keypad FREE
+  packageVersion: 1.0.1
+  assetPath: Assets/Keypad/Prefabs/KeypadStandard.prefab
+  uploadId: 657263

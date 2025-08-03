@@ -144,7 +144,7 @@ We decided to be more careful updating the next task backlog and not underestima
 
 <details> <summary><h3>Daily Scrum Chat Screenshots:</h3></summary>
   
-  ![Screenshot 1](Readme_Images/Sprint_2.png)
+  ![Screenshot 1](Readme_Images/chat.png)
   ![Screenshot 2](Readme_Images/Sprint_2_1.png)
   ![Screenshot 3](Readme_Images/Sprint_2_2.png) 
   ![Screenshot 4](Readme_Images/dc.png) 
@@ -196,4 +196,52 @@ This does not mean the lack of communication is acceptable however. The team all
 
 Shorter times between task updates were agreed upon, with at least two status updates per day, even if no progress was made.
 
+# 3rd Sprint
+
+- *Total story points for tasks in the first sprint is*: 76 points.
+- *Method of Estimation*: Estimated how long each task would take in hours by talking to person associated with the task, then gave them points based on the fibonacci sequence (1-2-3-5-8...).
+
+
+- **Daily Scrum**: Daily scrums have again, mainly been held on WhatsApp, and we held occasional Google Meets sessions as we deemed fit. Below are the screenshots of our chats.
+
+<details> <summary><h3>Daily Scrum Chat Screenshots:</h3></summary>
   
+  ![Screenshot 1](Readme_Images/chat.png)
+  ![Screenshot 4](Readme_Images/chattttt.png) 
+  ![Screenshot 2](Readme_Images/chatt.png)
+  ![Screenshot 3](Readme_Images/chattt.png) 
+  ![Screenshot 4](Readme_Images/chatttt.png) 
+  
+
+
+</details>
+
+- **Sprint Board Update**
+![Trello Board](Readme_Images/trello3.png)
+
+<details> <summary><h3>Product Progress Screenshots:</h3></summary>
+  
+  ![Alt Text](Readme_Images/Ambiance%20TimeLocked.gif)
+  ![Screenshot 1](Readme_Images/chess.png)
+  ![Screenshot 2](Readme_Images/clock.png)
+  ![Screenshot 3](Readme_Images/Firebase.png) 
+  ![Screenshot 4](Readme_Images/chatttt.png) 
+
+
+  * **Story & Puzzle Progression Notes**: 
+    https://www.notion.so/Hikaye-226ec72267a7806091a1cc10aeffc747
+
+
+    https://www.notion.so/Hikaye-2-231ec72267a7800b9a40c7cc98117fed
+
+
+  </details>
+
+  * **Sprint Review:**
+Team acknowledged that we were far frmo giving it our all after the middle of the 2nd sprint. This unfortunately continued until the end of this sprint.
+Many puzzles and content for the game was created however, so there is a lot of unrealized potential, we all agreed.
+We were off by 26 points, having completed 50 out of 76 that was our goal for sprint 3.
+Sprint review attendees: Kerem Yıldız, Arif Dağ, Sevde Nur Taşkın.
+
+**Sprint retrospective**
+Ggs?

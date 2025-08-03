@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Time Locked/Assets/AdditionalFiles/TextMesh Pro/Resources.meta
 guid: 7fb27816320919e43b40eb45fb6dbe3b
+========
+guid: 95ff005101916664788eb90f98364d27
+>>>>>>>> Stashed changes:Time Locked/Assets/AdditionalFiles/ProBuilder Data.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
